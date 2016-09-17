@@ -20,8 +20,8 @@ local function questlevel()
 		end
 	end
 end
-hooksecurefunc("QuestLog_Update", questlevel)
-QuestLogScrollFrameScrollBar:HookScript("OnValueChanged", questlevel)
+-- hooksecurefunc("QuestLog_Update", questlevel)
+-- QuestLogScrollFrameScrollBar:HookScript("OnValueChanged", questlevel)
 
 --	Auto collapse WatchFrame in instance
 if cfg.modules.quest.auto_collapse then
@@ -29,14 +29,14 @@ if cfg.modules.quest.auto_collapse then
 	f:RegisterEvent("PLAYER_ENTERING_WORLD")
 	f:SetScript("OnEvent", function(self, event)
 		if IsInInstance() then
-			WatchFrame_CollapseExpandButton_OnClick(WatchFrame_CollapseExpandButton)
-		elseif WatchFrame.collapsed and not InCombatLockdown() then
-			WatchFrame_CollapseExpandButton_OnClick(WatchFrame_CollapseExpandButton)
+			ObjectiveTracker_MinimizeButton_OnClick(ObjectiveTracker_MinimizeButton)
+		elseif ObjectiveTrackerFrame.collapsed and not InCombatLockdown() then
+			ObjectiveTracker_MinimizeButton_OnClick(ObjectiveTracker_MinimizeButton)
 		end
 	end)
 end
 --	CTRL+Click to abandon a quest or ALT+Click to share a quest(by Suicidal Katt)
-hooksecurefunc("QuestLogTitleButton_OnClick", function(self, button)
+hooksecurefunc("QuestTitleButton_OnClick", function(self, button)
 	local questIndex = self:GetID()
 	local questName = self:GetText()
 	if IsModifiedClick() then
@@ -94,7 +94,7 @@ StaticPopupDialogs.WATCHFRAME_URL = {
 }
 
 local tblDropDown = {}
-hooksecurefunc("WatchFrameDropDown_Initialize", function(self)
+hooksecurefunc("QuestObjectiveTracker_OnOpenDropDown", function(self)
 	if self.type == "QUEST" then
 		tblDropDown = {
 			text = linktext, notCheckable = true, arg1 = self.index,
@@ -119,7 +119,7 @@ hooksecurefunc("WatchFrameDropDown_Initialize", function(self)
 		UIDropDownMenu_AddButton(tblDropDown, UIDROPDOWN_MENU_LEVEL)
 	end
 end)
-UIDropDownMenu_Initialize(WatchFrameDropDown, WatchFrameDropDown_Initialize, "MENU")
+-- UIDropDownMenu_Initialize(QuestObjectiveTracker, QuestObjectiveTracker_OnOpenDropDown, "MENU")
 
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")

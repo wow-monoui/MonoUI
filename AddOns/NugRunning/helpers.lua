@@ -7,9 +7,11 @@ NugRunningConfig.cooldowns = {}
 NugRunningConfig.activations = {}
 NugRunningConfig.event_timers = {}
 NugRunningConfig.totems = {}
+NugRunningConfig.casts = {}
 local AFFILIATION_MINE = COMBATLOG_OBJECT_AFFILIATION_MINE
 local AFFILIATION_PARTY_OR_RAID = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY
 local AFFILIATION_OUTSIDER = COMBATLOG_OBJECT_AFFILIATION_OUTSIDER
+
 
 helpers.Talent = function (spellID)
     -- local spellName
@@ -55,6 +57,7 @@ helpers.Anchor = function(name, opts)
 end
 
 helpers.Spell = function(id, opts)
+    if not opts then NugRunningConfig[id] = opts; return end
     if opts.singleTarget then opts.target = "target" end
     if opts.anySource then opts.affiliation = AFFILIATION_PARTY_OR_RAID end
     if opts.affiliation == "raid" then opts.affiliation = AFFILIATION_PARTY_OR_RAID end
@@ -95,6 +98,16 @@ helpers.ModCooldown = function(id, mods)
     if type(id) == "table" then id = id[1] end
     apply_overrides(NugRunningConfig.cooldowns[id], mods)
 end
+
+
+helpers.Cast = function(id, opts)
+    if opts then 
+        opts.localname = GetSpellInfo(id)
+        if not opts.localname then print("nrun: misssing spell #"..id) return end
+    end
+    NugRunningConfig.casts[id] = opts
+end
+
 
 helpers.Activation = function(id, opts)
     if opts then
@@ -150,7 +163,7 @@ local ItemSetsRegistered = {}
 
 local function TrackItemSet(tiername, itemArray)
     ItemSetsRegistered[tiername] = ItemSetsRegistered[tiername] or {}
-    if not ItemSetsRegistered[tiername].tiems then
+    if not ItemSetsRegistered[tiername].items then
         ItemSetsRegistered[tiername].items = {}
         ItemSetsRegistered[tiername].callbacks = {}
         local bitems = ItemSetsRegistered[tiername].items
@@ -169,8 +182,21 @@ local function RegisterSetBonusCallback(tiername, pieces, handle_on, handle_off)
     tier.callbacks[pieces].off = handle_off
 end
 
+
+local function IsSetBonusActive(tiername, bonuscount)
+        local tier = ItemSetsRegistered[tiername]
+        local tier_items = tier.items
+        local pieces_equipped = 0
+        for _, slot in ipairs(tierSlots) do
+            local itemID = GetInventoryItemID("player", slot)
+            if tier_items[itemID] then pieces_equipped = pieces_equipped + 1 end
+        end
+        return (pieces_equipped >= bonuscount)
+end
+
 helpers.TrackItemSet = TrackItemSet
 helpers.RegisterSetBonusCallback = RegisterSetBonusCallback
+helpers.IsSetBonusActive = IsSetBonusActive
 
 
 local tierSlots = {

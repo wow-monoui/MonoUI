@@ -36,12 +36,14 @@
 
  Hooks
 
- OverrideVisibility(self) - Used to completely override the internal visibility function.
-                            Removing the table key entry will make the element fall-back
-                            to its internal function again.
- Override(self)           - Used to completely override the internal update function.
-                            Removing the table key entry will make the element fall-back
-                            to its internal function again.
+ OverrideVisibility(self) - Used to completely override the internal visibility
+                            function. Removing the table key entry will make
+                            the element fall-back to its internal function
+                            again.
+ Override(self)           - Used to completely override the internal
+                            update function. Removing the table key entry will
+                            make the element fall-back to its internal function
+                            again.
 ]]
 
 local parent, ns = ...
@@ -52,23 +54,14 @@ local STAGGER_YELLOW_TRANSITION = STAGGER_YELLOW_TRANSITION
 local STAGGER_RED_TRANSITION = STAGGER_RED_TRANSITION
 
 -- table indices of bar colors
-local GREEN_INDEX = 1;
-local YELLOW_INDEX = 2;
-local RED_INDEX = 3;
-
-local STANCE_OF_THE_STURY_OX_ID = 23
+local STAGGER_GREEN_INDEX = STAGGER_GREEN_INDEX or 1
+local STAGGER_YELLOW_INDEX = STAGGER_YELLOW_INDEX or 2
+local STAGGER_RED_INDEX = STAGGER_RED_INDEX or 3
 
 local UnitHealthMax = UnitHealthMax
 local UnitStagger = UnitStagger
 
 local _, playerClass = UnitClass("player")
-
--- TODO: fix color in the power element
-oUF.colors.power[BREWMASTER_POWER_BAR_NAME] = {
-	{0.52, 1.0, 0.52},
-	{1.0, 0.98, 0.72},
-	{1.0, 0.42, 0.42},
-}
 local color
 
 local Update = function(self, event, unit)
@@ -88,11 +81,11 @@ local Update = function(self, event, unit)
 
 	local rgb
 	if(staggerPercent >= STAGGER_RED_TRANSITION) then
-		rgb = color[RED_INDEX]
+		rgb = color[STAGGER_RED_INDEX]
 	elseif(staggerPercent > STAGGER_YELLOW_TRANSITION) then
-		rgb = color[YELLOW_INDEX]
+		rgb = color[STAGGER_YELLOW_INDEX]
 	else
-		rgb = color[GREEN_INDEX]
+		rgb = color[STAGGER_GREEN_INDEX]
 	end
 
 	local r, g, b = rgb[1], rgb[2], rgb[3]
@@ -114,14 +107,17 @@ local Path = function(self, ...)
 end
 
 local Visibility = function(self, event, unit)
-	if(STANCE_OF_THE_STURY_OX_ID ~= GetShapeshiftFormID() or UnitHasVehiclePlayerFrameUI("player")) then
+	if(SPEC_MONK_BREWMASTER ~= GetSpecialization() or UnitHasVehiclePlayerFrameUI('player')) then
 		if self.Stagger:IsShown() then
 			self.Stagger:Hide()
 			self:UnregisterEvent('UNIT_AURA', Path)
 		end
-	elseif not self.Stagger:IsShown() then
-		self.Stagger:Show()
-		self:RegisterEvent('UNIT_AURA', Path)
+	else
+		if(not self.Stagger:IsShown()) then
+			self.Stagger:Show()
+			self:RegisterEvent('UNIT_AURA', Path)
+		end
+
 		return Path(self, event, unit)
 	end
 end
@@ -146,13 +142,12 @@ local Enable = function(self, unit)
 		color = self.colors.power[BREWMASTER_POWER_BAR_NAME]
 
 		self:RegisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
-		self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', VisibilityPath)
+		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath, true)
 
 		if(element:IsObjectType'StatusBar' and not element:GetStatusBarTexture()) then
 			element:SetStatusBarTexture[[Interface\TargetingFrame\UI-StatusBar]]
 		end
 
-		MonkStaggerBar.Show = MonkStaggerBar.Hide
 		MonkStaggerBar:UnregisterEvent'PLAYER_ENTERING_WORLD'
 		MonkStaggerBar:UnregisterEvent'PLAYER_SPECIALIZATION_CHANGED'
 		MonkStaggerBar:UnregisterEvent'UNIT_DISPLAYPOWER'
@@ -168,10 +163,8 @@ local Disable = function(self)
 		element:Hide()
 		self:UnregisterEvent('UNIT_AURA', Path)
 		self:UnregisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
-		self:UnregisterEvent('UPDATE_SHAPESHIFT_FORM', VisibilityPath)
+		self:UnregisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath)
 
-		MonkStaggerBar.Show = nil
-		MonkStaggerBar:Show()
 		MonkStaggerBar:UnregisterEvent'PLAYER_ENTERING_WORLD'
 		MonkStaggerBar:UnregisterEvent'PLAYER_SPECIALIZATION_CHANGED'
 		MonkStaggerBar:UnregisterEvent'UNIT_DISPLAYPOWER'

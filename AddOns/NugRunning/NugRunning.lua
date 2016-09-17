@@ -25,7 +25,7 @@ setmetatable(active,{ __newindex = function(t,k,v)
 end})
 setmetatable(free,{ __newindex = function(t,k,v)
     if k.opts then
-        if k.opts.with_cooldown then 
+        if k.opts.with_cooldown then
             local cd_opts = k.opts.with_cooldown
             config.cooldowns[cd_opts.id] = cd_opts
             NugRunning:SPELL_UPDATE_COOLDOWN()
@@ -36,29 +36,38 @@ setmetatable(free,{ __newindex = function(t,k,v)
     end
     k:Hide()
     rawset(active,k,nil)
-    rawset(t,k,v)
+    if not k.isExternal then
+        rawset(t,k,v)
+    end
     NugRunning:ArrangeTimers()
 end})
 local leaveGhost = true
 
 local gettimer = function(self,spellID,dstGUID,timerType)
+    local foundTimer
+    local spellActiveTimers = 0
     if type(spellID) == "number" then
-        for timer in pairs(self) do 
-            if  timer.spellID == spellID and
-                timer.dstGUID == dstGUID and
-                timer.timerType == timerType then
-                return timer;
+        for timer in pairs(self) do
+            if timer.spellID == spellID and timer.timerType == timerType then
+                spellActiveTimers = spellActiveTimers + 1
+                if timer.dstGUID == dstGUID then
+                    foundTimer = timer
+                    break
+                end
             end
         end
     else -- comparing by opts table, instead of
-        for timer in pairs(self) do 
-            if  timer.opts == spellID and
-                timer.dstGUID == dstGUID and
-                timer.timerType == timerType then
-                return timer;
+        for timer in pairs(self) do
+            if timer.opts == spellID and timer.timerType == timerType then
+                spellActiveTimers = spellActiveTimers + 1
+                if timer.dstGUID == dstGUID then
+                    foundTimer = timer
+                    break
+                end
             end
         end
     end
+    return foundTimer, spellActiveTimers
 end
 local IsPlayerSpell = IsPlayerSpell
 local GetSpellInfo_ = GetSpellInfo
@@ -193,21 +202,30 @@ function NugRunning.PLAYER_LOGIN(self,event,arg1)
     leaveGhost = NRunDB.leaveGhost
 
     NugRunning:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-        
-    NugRunning:RegisterEvent("PLAYER_TALENT_UPDATE") -- changing between dualspec
+
+
     NugRunning:RegisterEvent("GLYPH_UPDATED")
     NugRunning:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     NugRunning.ACTIVE_TALENT_GROUP_CHANGED = NugRunning.ReInitSpells
     NugRunning.GLYPH_UPDATED = NugRunning.ReInitSpells
-    NugRunning.PLAYER_TALENT_UPDATE = NugRunning.ReInitSpells
-    
+    -- NugRunning:RegisterEvent("PLAYER_TALENT_UPDATE")
+    -- NugRunning.PLAYER_TALENT_UPDATE = NugRunning.ReInitSpells
+    NugRunning.CHARACTER_POINTS_CHANGED = NugRunning.ReInitSpells
+    NugRunning:RegisterEvent("CHARACTER_POINTS_CHANGED")
+    NugRunning:ReInitSpells()
+
     NugRunning:RegisterEvent("UNIT_COMBO_POINTS")
-    
+
     NugRunning:RegisterEvent("PLAYER_TARGET_CHANGED")
     -- NugRunning:RegisterEvent("UNIT_AURA")
-        
+
     if NRunDB.cooldownsEnabled then
         NugRunning:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+        if C_Timer then
+        NugRunning.cooldownTicker = C_Timer.NewTicker(1, function()
+            NugRunning:SPELL_UPDATE_COOLDOWN("PERIODIC_COOLDOWN_UPDATE", true)
+        end)
+        end
     end
 
     if NRunDB.nameplates then
@@ -220,7 +238,7 @@ function NugRunning.PLAYER_LOGIN(self,event,arg1)
             nameplates = NugRunningNameplates
         end
     end
-    
+
     --NugRunning:RegisterEvent("SPELL_UPDATE_USABLE")
     NugRunning:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
     NugRunning:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
@@ -241,17 +259,19 @@ function NugRunning.PLAYER_LOGIN(self,event,arg1)
         local timer = NugRunning:CreateTimer()
         free[timer] = true
     end
+    --remove timer from the pool and change it to castbar
+    NugRunning:CreateCastbarTimer(table.remove(NugRunning.timers))
 
-    local _,class = UnitClass("player")
-    if (class == "WARLOCK" or class == "PRIEST") and NRunDB.dotpower then
-        Scouter = LibStub("LibScouter-1.0")
-        Scouter.RegisterCallback(NugRunning, "POWER_LEVEL_CHANGED", NugRunning.POWER_LEVEL_CHANGED)
-    end
-        
+    -- local _,class = UnitClass("player")
+    -- if (class == "WARLOCK" or class == "PRIEST") and NRunDB.dotpower then
+    --     Scouter = LibStub("LibScouter-1.0")
+    --     Scouter.RegisterCallback(NugRunning, "POWER_LEVEL_CHANGED", NugRunning.POWER_LEVEL_CHANGED)
+    -- end
+
     SLASH_NUGRUNNING1= "/nugrunning"
     SLASH_NUGRUNNING2= "/nrun"
     SlashCmdList["NUGRUNNING"] = NugRunning.SlashCmd
-    
+
     if NRunDB.totems and NugRunning.InitTotems then NugRunning:InitTotems() end
 end
 
@@ -276,18 +296,18 @@ function NugRunning.COMBAT_LOG_EVENT_UNFILTERED( self, event, timestamp, eventTy
         if opts.target and dstGUID ~= UnitGUID(opts.target) then return end
         if affiliationStatus then
             if eventType == "SPELL_AURA_REFRESH" then
-                return self:RefreshTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, nil, amount)
+                self:RefreshTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, nil, amount)
             elseif eventType == "SPELL_AURA_APPLIED_DOSE" then
-                return self:RefreshTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, nil, amount, opts._ignore_applied_dose)
+                self:RefreshTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, nil, amount, opts._ignore_applied_dose)
             elseif eventType == "SPELL_AURA_APPLIED" then
-                return self:ActivateTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType)
+                self:ActivateTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType)
             elseif eventType == "SPELL_AURA_REMOVED" then
-                return self:DeactivateTimer(srcGUID, dstGUID, spellID, spellName, opts, auraType)
+                self:DeactivateTimer(srcGUID, dstGUID, spellID, spellName, opts, auraType)
             elseif eventType == "SPELL_AURA_REMOVED_DOSE" then
-                return self:RemoveDose(srcGUID, dstGUID, spellID, spellName, auraType, amount)
+                self:RemoveDose(srcGUID, dstGUID, spellID, spellName, auraType, amount)
             elseif eventType == "SPELL_MISSED" then
                 if NRunDB.missesEnabled then
-                    return self:ActivateTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, "MISSED", auraType) -- auraType = missType in this case
+                    self:ActivateTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, "MISSED", auraType) -- auraType = missType in this case
                 end
             elseif eventType == "SPELL_CAST_SUCCESS" then
                 lastCastSpellID = spellID
@@ -303,9 +323,10 @@ function NugRunning.COMBAT_LOG_EVENT_UNFILTERED( self, event, timestamp, eventTy
                 if affiliationStatus or (opts.affiliation and bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MASK) <= opts.affiliation ) then
                     if spellID == opts.spellID then
                         if opts.action then
-                            opts.action(active, srcGUID, dstGUID, spellID)
+                            opts.action(active, srcGUID, dstGUID, spellID, auraType) --  auraType = damage amount for SPELL_DAMAGE
                         else
-                            return self:ActivateTimer(playerGUID, playerGUID, dstName, nil, spellID, spellName, opts, "EVENT", opts.duration)
+                            self:ActivateTimer(playerGUID, playerGUID, dstName, nil, spellID, spellName, opts, "EVENT", opts.duration)
+                            break
                         end
                     end
                 end
@@ -332,7 +353,10 @@ function NugRunning.SPELL_ACTIVATION_OVERLAY_GLOW_SHOW(self,event, spellID)
             self:ActivateTimer(UnitGUID("player"),UnitGUID("player"), UnitName("player"), nil, spellID, opts.localname, opts, "ACTIVATION", opts.duration)
         else
             local timer = gettimer(active,spellID,UnitGUID("player"),"COOLDOWN")
-            if timer then timer:SetAlpha(1) end
+            if timer then
+                timer.effect:SetEffect(opts.effect)
+                timer.effect:Show()
+            end
         end
     end
 end
@@ -344,7 +368,10 @@ function NugRunning.SPELL_ACTIVATION_OVERLAY_GLOW_HIDE(self,event, spellID)
             self:DeactivateTimer(UnitGUID("player"),UnitGUID("player"), spellID, nil, opts, "ACTIVATION")
         else
             local timer = gettimer(active,spellID,UnitGUID("player"),"COOLDOWN")
-            if timer then timer:SetAlpha(0.5) end
+            if timer then
+                timer.effect:SetEffect(opts.effect)
+                timer.effect:Hide()
+            end
         end
     end
 end
@@ -362,14 +389,18 @@ local function GetSpellCooldownCharges(spellID)
     return startTime, duration, enabled, charges, maxCharges
 end
 
-function NugRunning.SPELL_UPDATE_COOLDOWN(self,event)
+local lastCooldownUpdateTime = GetTime()
+function NugRunning.SPELL_UPDATE_COOLDOWN(self,event, periodic)
+    if periodic and GetTime() - lastCooldownUpdateTime < 0.9 then return end
+    -- print(GetTime(), event)
     for spellID,opts in pairs(NugRunningConfig.cooldowns) do
-        if not opts.check_known or IsPlayerSpell(spellID) then -- Eh, no continue in Lua
+        if not opts.check_known or IsPlayerSpell(spellID) then
 
-        local startTime, duration, enabled, charges, maxCharges = GetSpellCooldownCharges(spellID) 
+        local startTime, duration, enabled, charges, maxCharges = GetSpellCooldownCharges(spellID)
 
         local timer
-        if opts.timer and (opts.timer.spellID == spellID) then
+        local old_timer = opts.timer
+        if old_timer and (old_timer.spellID == spellID and old_timer.timerType == "COOLDOWN") then
             timer = opts.timer
         elseif opts.replaces then
             timer = gettimer(active, opts.replaces, UnitGUID("player"), "COOLDOWN")
@@ -389,12 +420,20 @@ function NugRunning.SPELL_UPDATE_COOLDOWN(self,event)
             else
                     if not active[timer] or timer.isGhost then
                         local mdur = opts.minduration
-                        if not mdur or duration > mdur then
-                            timer = self:ActivateTimer(UnitGUID("player"),UnitGUID("player"), UnitName("player"), nil, spellID, opts.localname, opts, "COOLDOWN", duration + startTime - GetTime())
+                        local time_remains = (duration + startTime) - GetTime()
+                        local mrem = opts.hide_until
+                        if (not mdur or duration > mdur) and (not mrem or time_remains < mrem) then
+                            timer = self:ActivateTimer(UnitGUID("player"),UnitGUID("player"), UnitName("player"), nil, spellID, opts.localname, opts, "COOLDOWN", time_remains)
+                        else
+                            if timer and timer.isGhost then
+                                NugRunning.GhostExpire(timer)
+                            end
                         end
                         if timer then
                             timer.cd_startTime = startTime
                             timer.cd_duration = duration
+                            timer.fixedoffset = timer.opts.fixedlen and duration - timer.opts.fixedlen or 0
+                            timer:SetTime(startTime, startTime + duration,  timer.fixedoffset)
                             opts.timer = timer
                         end
                     else
@@ -402,7 +441,7 @@ function NugRunning.SPELL_UPDATE_COOLDOWN(self,event)
                         if timer.cd_startTime ~= startTime or timer.cd_duration ~= duration then
                             timer.cd_startTime = startTime
                             timer.fixedoffset = timer.opts.fixedlen and duration - timer.opts.fixedlen or 0
-                            timer:SetTime(startTime +  timer.fixedoffset, startTime + duration)
+                            timer:SetTime(startTime, startTime + duration, timer.fixedoffset)
                         -- elseif timer.cd_duration ~= duration then
                         end
 
@@ -414,7 +453,7 @@ function NugRunning.SPELL_UPDATE_COOLDOWN(self,event)
                         end
                         opts.timer = timer
                     end
-                    if charges and timer then 
+                    if charges and timer then
                         opts.timer:SetCount(maxCharges-charges)
                     end
             end
@@ -422,11 +461,13 @@ function NugRunning.SPELL_UPDATE_COOLDOWN(self,event)
 
         end
     end
+    lastCooldownUpdateTime = GetTime()
 end
 
 local helpful = "HELPFUL"
 local harmful = "HARMFUL"
 function NugRunning.ActivateTimer(self,srcGUID,dstGUID,dstName,dstFlags, spellID, spellName, opts, timerType, override, amount, from_unitaura)  -- duration override
+    if opts.target and dstGUID ~= UnitGUID(opts.target) then return end
     if timerType == "MISSED" then
         if override == "IMMUNE" then return end
         opts = { duration = 3, color = NugRunningConfig.colors.MISSED, scale = .8, priority = opts.priority or 100501, shine = true }
@@ -454,21 +495,23 @@ function NugRunning.ActivateTimer(self,srcGUID,dstGUID,dstName,dstFlags, spellID
         cd_opts.timer = nil
     end
 
-    -- if timer.opts.idgroup then
-    --     spellID = timer.opts.idgroup[1]
-    -- end
-    local timer = gettimer(active, opts,dstGUID,timerType) -- finding timer by opts table id
+
+    local timer, totalTimers = gettimer(active, opts,dstGUID,timerType) -- finding timer by opts table id
     if timer then
         -- spellID = timer.spellID -- swapping current id for existing timer id in case they're different
                                 -- refresh will be searching by spellID again
         if multiTargetGUID then timer.targets[multiTargetGUID] = true end
         return self:RefreshTimer(srcGUID, dstGUID or multiTargetGUID, dstName, dstFlags, spellID, spellName, opts, timerType, override)
     end
-    
+
+    if opts.maxtimers and totalTimers > opts.maxtimers and UnitGUID("target") ~= dstGUID then
+        return
+    end
+
     timer = next(free)
     if not timer then return end
     active[timer] = true
-    if timer.isGhost then timer:SetScript("OnUpdate",NugRunning.TimerFunc) end
+    timer:SetScript("OnUpdate",NugRunning.TimerFunc)
 
     if opts.init and not opts.init_done then
         opts:init()
@@ -482,16 +525,16 @@ function NugRunning.ActivateTimer(self,srcGUID,dstGUID,dstName,dstFlags, spellID
             timer.tickPeriod = nil
         end
 
-        local plevel = self:GetPowerLevel()
-        if ssPendingTimestamp > GetTime() - 0.3 and ssPendingTarget == dstGUID and ssPending[spellID] then
-            timer.powerLevel = ssPending[spellID].powerLevel
-            timer.tickPeriod = ssPending[spellID].tickPeriod
-            ssPending[spellID] = nil
-        else
-            timer.powerLevel = plevel
-        end
-        
-        self:UpdateTimerPower(timer, plevel)
+        -- local plevel = self:GetPowerLevel()
+        -- if ssPendingTimestamp > GetTime() - 0.3 and ssPendingTarget == dstGUID and ssPending[spellID] then
+        --     timer.powerLevel = ssPending[spellID].powerLevel
+        --     timer.tickPeriod = ssPending[spellID].tickPeriod
+        --     ssPending[spellID] = nil
+        -- else
+        --     timer.powerLevel = plevel
+        -- end
+
+        -- self:UpdateTimerPower(timer, plevel)
     end
     timer.srcGUID = srcGUID
     timer.dstGUID = dstGUID
@@ -502,7 +545,7 @@ function NugRunning.ActivateTimer(self,srcGUID,dstGUID,dstName,dstFlags, spellID
     timer:SetIcon(select(3,GetSpellInfo(opts.showid or spellID)))
     timer.opts = opts
     timer.onupdate = opts.onupdate
-        
+
     local time
     if timerType == "MISSED" then
         time = opts.duration
@@ -550,11 +593,12 @@ function NugRunning.ActivateTimer(self,srcGUID,dstGUID,dstName,dstFlags, spellID
         timer:UpdateMark()
         timer:SetCount(amount)
     else
-        timer:SetTime(now + timer.fixedoffset, now + time)
+        timer:SetTime(now, now + time, timer.fixedoffset)
         timer:SetCount(amount)
     end
     timer.count = amount
-    
+
+
     if opts.textfunc and type(opts.textfunc) == "function" then
         nameText = opts.textfunc(timer)
     elseif timerType == "MISSED" then
@@ -565,11 +609,39 @@ function NugRunning.ActivateTimer(self,srcGUID,dstGUID,dstName,dstFlags, spellID
     if timer.SetName then timer:SetName(nameText) end
 
     if timer.glow:IsPlaying() then timer.glow:Stop() end
+    if timer.arrowglow:IsPlaying() then
+        timer.arrowglow:Stop()
+    end
+
+    local effect = opts.effect
+    if effect then
+        timer.effect:SetEffect(effect)
+    else
+        timer.effect:Hide()
+    end
+
+    if opts.scale_until then
+        if timer:Remains() > opts.scale_until then
+            timer:VScale(0.4)
+            timer:SetTime(nil, nil, nil, 0)
+        end
+    end
+
+    local arrow = opts.arrow
+    if arrow then
+        local color = arrow[3] and arrow or {1,0,0}
+        timer.arrow:SetVertexColor(unpack(color))
+        timer.arrow:Show()
+    else
+        timer.arrow:Hide()
+    end
+
     timer:Show()
     if not timer.animIn:IsPlaying() and not from_unitaura then timer.animIn:Play() end
     timer.shine.tex:SetAlpha(0)
     if opts.shine and not timer.shine:IsPlaying() then timer.shine:Play() end
-    
+
+
     self:ArrangeTimers()
     return timer
 end
@@ -578,20 +650,22 @@ function NugRunning.RefreshTimer(self,srcGUID,dstGUID,dstName,dstFlags, spellID,
     local multiTargetGUID
     if opts.multiTarget then multiTargetGUID = dstGUID; dstGUID = nil; end
 
+
     local timer = gettimer(active, opts or spellID,dstGUID,timerType)
     if not timer then
         return self:ActivateTimer(srcGUID, dstGUID or multiTargetGUID, dstName, dstFlags, spellID, spellName, opts, timerType)
     end
     if timerType == "COOLDOWN" and not timer.isGhost then return timer end
-    if timer.isGhost then
+    -- if timer.isGhost then
         timer:SetScript("OnUpdate",NugRunning.TimerFunc)
         timer.isGhost = nil
+        timer.expiredGhost = nil
         if not opts.color then
         if timerType == "DEBUFF" then opts.color = { 0.8, 0.1, 0.7}
         else opts.color = { 1, 0.4, 0.2} end
         end
         timer:SetColor(unpack(opts.color))
-    end
+    -- end
 
     local time
     if override then time = override
@@ -614,7 +688,7 @@ function NugRunning.RefreshTimer(self,srcGUID,dstGUID,dstName,dstFlags, spellID,
     elseif not opts.timeless then
         local now = GetTime()
         timer.fixedoffset = opts.fixedlen and time - opts.fixedlen or 0
-        if time then timer:SetTime(now + timer.fixedoffset, now + time) end
+        if time then timer:SetTime(now, now + time, timer.fixedoffset) end
         timer:SetCount(amount)
     end
     timer.count = amount
@@ -627,20 +701,46 @@ function NugRunning.RefreshTimer(self,srcGUID,dstGUID,dstName,dstFlags, spellID,
             timer.tickPeriod = nil
         end
 
-        local plevel = self:GetPowerLevel()
-        if ssPendingTimestamp > GetTime() - 0.3 and ssPendingTarget == dstGUID and ssPending[spellID] then
-            timer.powerLevel = ssPending[spellID].powerLevel
-            timer.tickPeriod = ssPending[spellID].tickPeriod
-            ssPending[spellID] = nil
-        else
-            timer.powerLevel = plevel
+        -- local plevel = self:GetPowerLevel()
+        -- if ssPendingTimestamp > GetTime() - 0.3 and ssPendingTarget == dstGUID and ssPending[spellID] then
+        --     timer.powerLevel = ssPending[spellID].powerLevel
+        --     timer.tickPeriod = ssPending[spellID].tickPeriod
+        --     ssPending[spellID] = nil
+        -- else
+        --     timer.powerLevel = plevel
+        -- end
+        -- self:UpdateTimerPower(timer, plevel)
+    end
+
+    if opts.scale_until then
+        if timer:Remains() > opts.scale_until then
+            timer:VScale(0.4)
+            -- timer:SetTime(nil,nil,
         end
-        self:UpdateTimerPower(timer, plevel)
+    end
+
+    local effect = opts.effect
+    if effect then
+        timer.effect:SetEffect(effect)
+    else
+        timer.effect:Hide()
+    end
+
+    local arrow = opts.arrow
+    if arrow then
+        local color = arrow[3] and arrow or {1,0,0}
+        timer.arrow:SetVertexColor(unpack(color))
+        timer.arrow:Show()
+    else
+        timer.arrow:Hide()
     end
 
     timer:UpdateMark()
 
     if timer.glow:IsPlaying() then timer.glow:Stop() end
+    if timer.arrowglow:IsPlaying() then
+        timer.arrowglow:Stop()
+    end
     if not noshine and opts.shinerefresh and not timer.shine:IsPlaying() then timer.shine:Play() end
 
     self:ArrangeTimers()
@@ -730,7 +830,7 @@ end
 -- 5.0 changes: UnitAura now returns correct info at the time of CLEU SPELL_AURA_APPLIED event
 --              So, spells are no longer queued.
 
-local debuffUnits = {"target","mouseover","arena1","arena2","arena3","arena4","arena5","focus"}
+local debuffUnits = {"target","mouseover","focus","arena1","arena2","arena3","arena4","arena5"}
 local buffUnits = {"player","target","mouseover"}
 
 do
@@ -775,13 +875,14 @@ function NugRunning.SetUnitAuraValues(self, timer, spellID, name, rank, icon, co
             if aura_spellID then
                 if aura_spellID == spellID and NugRunning.UnitAffiliationCheck(caster, timer.opts.affiliation) then
                     if timer.opts.charged then
+                        timer:SetMinMaxCharge(0, timer.opts.maxcharge)
                         timer:SetCharge(count)
                     elseif not timer.opts.timeless then
                         timer.fixedoffset = timer.opts.fixedlen and duration - timer.opts.fixedlen or 0
                         local oldExpTime = timer.endTime
-                        timer:SetTime(expirationTime - duration + timer.fixedoffset,expirationTime)
+                        timer:SetTime(expirationTime - duration,expirationTime, timer.fixedoffset)
                         timer:SetCount(count)
-                        if oldExpTime and oldExpTime + 3 < expirationTime then
+                        if oldExpTime and oldExpTime ~= expirationTime then
                             -- if opts.tick and NRunDB.dotticks then
                             --     timer.tickPeriod = opts.tick > 0 and (opts.tick/(1+(UnitSpellHaste("player")/100))) or math.abs(opts.tick)
                             --     timer.mark.fullticks = nil
@@ -789,17 +890,22 @@ function NugRunning.SetUnitAuraValues(self, timer, spellID, name, rank, icon, co
                             --     timer.tickPeriod = nil
                             -- end
 
-                            local plevel = self:GetPowerLevel()
-                            if ssPendingTimestamp > GetTime() - 0.3 and ssPendingTarget == dstGUID and ssPending[spellID] then
-                                timer.powerLevel = ssPending[spellID].powerLevel
-                                timer.tickPeriod = ssPending[spellID].tickPeriod
-                                ssPending[spellID] = nil
-                            else
-                                timer.powerLevel = plevel
-                            end
+                            NugRunning:ArrangeTimers()
 
-                            self:UpdateTimerPower(timer, plevel)
+                            -- local plevel = self:GetPowerLevel()
+                            -- if ssPendingTimestamp > GetTime() - 0.3 and ssPendingTarget == dstGUID and ssPending[spellID] then
+                            --     timer.powerLevel = ssPending[spellID].powerLevel
+                            --     timer.tickPeriod = ssPending[spellID].tickPeriod
+                            --     ssPending[spellID] = nil
+                            -- else
+                            --     timer.powerLevel = plevel
+                            -- end
+
+                            -- self:UpdateTimerPower(timer, plevel)
                         end
+                        timer:SetCount(count)
+                    else
+                        timer:SetCount(count)
                     end
                     if type(absorb) == "number" and absorb > 0
                         then timer.absorb = absorb
@@ -807,20 +913,32 @@ function NugRunning.SetUnitAuraValues(self, timer, spellID, name, rank, icon, co
                     end
 
                     local name = GetSpellInfo(spellID)
-                    -- print("GOT DATA!>>  ", name, duration)
 
                     return true
-                    -- break
                 end
             end
 end
 
 function NugRunning.GetUnitAuraData(self, unit, timer, spellID)
         for auraIndex=1,100 do
-            -- local name, _,_, count, _, duration, expirationTime, caster, _,_, aura_spellID, _, _, _, absorb = UnitAura(unit, auraIndex, timer.filter)
-            return NugRunning:SetUnitAuraValues(timer, spellID, UnitAura(unit, auraIndex, timer.filter))
+            local name, rank, icon, count, dispelType, duration, expirationTime, caster, isStealable, shouldConsolidate, aura_spellID, canApplyAura, isBossDebuff, value1, absorb, value3 = UnitAura(unit, auraIndex, timer.filter)
+            if spellID == aura_spellID then
+                return NugRunning:SetUnitAuraValues(timer, spellID, name, rank, icon, count, dispelType, duration, expirationTime, caster, isStealable, shouldConsolidate, aura_spellID, canApplyAura, isBossDebuff, value1, absorb, value3)
+            elseif name == nil then
+                return
+            end
         end
 end
+
+
+local function GetGradientColor(c1, c2, v)
+    if v > 1 then v = 1 end
+    local r = c1[1] + v*(c2[1]-c1[1])
+    local g = c1[2] + v*(c2[2]-c1[2])
+    local b = c1[3] + v*(c2[3]-c1[3])
+    return r,g,b
+end
+NugRunning.GetGradientColor = GetGradientColor
 
 local math_floor = math.floor
 local round = function(v) return math_floor(v+.1) end
@@ -848,14 +966,47 @@ function NugRunning.TimerFunc(self,time)
 
     self:Update(beforeEnd)
 
+    if opts.color2 then
+        local dur = endTime - self.startTime
+        self:SetColor(GetGradientColor(opts.color2, opts.color, beforeEnd/dur))
+    end
+
     local glowtime = opts.glowtime
     if glowtime and beforeEnd < glowtime then
         if self.glow and not self.glow:IsPlaying() then self.glow:Play() end
     end
 
+    local glow2time = opts.glow2time
+    if glow2time then
+        if beforeEnd < glow2time then
+            if self.arrowglow and not self.arrowglow:IsPlaying() then
+                self.arrow:Show()
+                self.arrowglow:Play()
+            end
+        else
+            if self.arrowglow and self.arrowglow:IsPlaying() then
+                -- self.arrow:Hide()
+                self.arrowglow:Stop()
+            end
+        end
+    end
+
     local rm = opts.recast_mark
     if rm and beforeEnd < rm and beforeEnd > rm-0.1 then
         self.mark.shine:Play()
+    end
+
+    local scaleAnimLength = 1
+    local su = opts.scale_until
+    if su and beforeEnd <= su and beforeEnd > su - (scaleAnimLength+0.04) then
+        local os = opts.scale or 1
+        local ms = 0.4
+        local progress = 1 - ((beforeEnd - (su - scaleAnimLength))/ scaleAnimLength)
+        if progress > 0.98 then progress = 1 end
+        local pscale = ms + (os-ms)*progress
+        self:VScale(pscale)
+        self:SetTime(nil, nil, nil, progress)
+        if self._scale == os and not self.shine:IsPlaying() then self.shine:Play() end
     end
 
     local tickPeriod = self.tickPeriod
@@ -866,6 +1017,7 @@ function NugRunning.TimerFunc(self,time)
             self:UpdateMark(closestTickTime)
 
             if self.mark.fullticks and self.opts.tickshine then
+                -- print(beforeEnd, self.tickPeriod, self.endTime - self.startTime)
                 self.mark.shine:Play()
             else
                 self.mark.spark:CatchUp()
@@ -882,6 +1034,11 @@ end
 function NugRunning.GhostExpire(self)
     self:SetScript("OnUpdate", NugRunning.TimerFunc)
     self.expiredGhost = true
+    if self.glow:IsPlaying() then self.glow:Stop() end
+    self.arrow:Hide()
+    if self.arrowglow:IsPlaying() then
+        self.arrowglow:Stop()
+    end
     free[self] = true
     self.isGhost = nil
 end
@@ -900,6 +1057,7 @@ local TimerBecomeGhost = function(self)
     self.expiredGhost = nil
     self.isGhost = true
     self:SetPowerStatus(nil)
+    self.arrow:Hide()
     self:ToGhost()
     local opts = self.opts
     if type(opts.ghost) == "number" then
@@ -908,6 +1066,14 @@ local TimerBecomeGhost = function(self)
     else
         self.ghost_duration = 3
         self.ghost_noleave = nil
+    end
+    if opts.ghosteffect then
+        self.effect:SetEffect(opts.ghosteffect)
+        self.effect:Show()
+    end
+
+    if opts.glowghost then
+        if not self.glow:IsPlaying() then self.glow:Play() end
     end
     self._elapsed = 0
     self:SetScript("OnUpdate", NugRunning.GhostFunc)
@@ -941,7 +1107,7 @@ function NugRunning.CreateTimer(self)
     local f = NugRunning.ConstructTimerBar(w,h)
     f._elapsed = 0
     f._width = w
-    f._height = h 
+    f._height = h
 
     f.prototype = NugRunning[f.prototype or "TimerBar"]
 
@@ -952,15 +1118,15 @@ function NugRunning.CreateTimer(self)
                                 end})
 
     f:SetScript("OnUpdate", NugRunning.TimerFunc)
-    
+
     f.BecomeGhost = TimerBecomeGhost
     -- f.is_type = Timer_is_type
     -- f.matches = Timer_matches
-    
+
     f.targets = {}
     f:Hide()
     table.insert(alltimers,f)
-    
+
     return f
 end
 
@@ -977,12 +1143,14 @@ do
     local ySign
     local doswap
     local anchors
+    local dbanchors
     function NugRunning.SetupArrange(self)
         point = ( NRunDB.growth == "down" and "TOPLEFT" ) or "BOTTOMLEFT"
         to = ( NRunDB.growth == "down" and "BOTTOMLEFT" ) or "TOPLEFT"
         ySign = ( NRunDB.growth == "down" and -1 ) or 1
         doswap = NRunDB.swapTarget
         anchors = NugRunning.anchors
+        dbanchors = NRunDB.anchors
     end
     -- local playerTimers = {}
     -- local targetTimers = {}
@@ -1024,7 +1192,7 @@ do
                 table.insert(guid_groups[timer.dstGUID],timer)
             end
         end
-        
+
         for g,tbl in pairs(groups) do
             table.sort(tbl,sortfunc)
         end
@@ -1034,6 +1202,10 @@ do
 
         for name, anchor in pairs(NugRunning.anchors) do
             local aopts = anchor.opts
+            local growth = dbanchors[name].growth or NRunDB.growth
+            point = ( growth == "down" and "TOPLEFT" ) or "BOTTOMLEFT"
+            to = ( growth == "down" and "BOTTOMLEFT" ) or "TOPLEFT"
+            ySign = ( growth == "down" and -1 ) or 1
             local prev
             local gap = 0
             for _, gopts in pairs(aopts) do
@@ -1086,30 +1258,30 @@ function NugRunning.PLAYER_TARGET_CHANGED(self)
     self:ArrangeTimers()
 end
 
-function NugRunning:GetPowerLevel()
-    return Scouter and Scouter:GetPowerLevel(true) or 0
-end
-function NugRunning:UpdateTimerPower(timer, plevel)
-    local treshold = 1500
-    if timer.powerLevel > plevel+treshold then
-        timer:SetPowerStatus("HIGH", timer.powerLevel-plevel)
-    elseif timer.powerLevel+treshold < plevel then
-        timer:SetPowerStatus("LOW", timer.powerLevel-plevel)
-    else
-        timer:SetPowerStatus(nil)
-    end
-end
-function NugRunning.POWER_LEVEL_CHANGED(event, plevelfull)
-    local plevel = NugRunning:GetPowerLevel() -- without damage multipliers
-    for timer in pairs(active) do
-        if timer.opts.showpower and timer.powerLevel and not timer.isGhost then
-            -- timer:SetName(timer.powerLevel)
-            NugRunning:UpdateTimerPower(timer, plevel)
-        else
-            timer:SetPowerStatus(nil)
-        end
-    end
-end
+-- function NugRunning:GetPowerLevel()
+--     return Scouter and Scouter:GetPowerLevel(true) or 0
+-- end
+-- function NugRunning:UpdateTimerPower(timer, plevel)
+--     local treshold = 1500
+--     if timer.powerLevel > plevel+treshold then
+--         timer:SetPowerStatus("HIGH", timer.powerLevel-plevel)
+--     elseif timer.powerLevel+treshold < plevel then
+--         timer:SetPowerStatus("LOW", timer.powerLevel-plevel)
+--     else
+--         timer:SetPowerStatus(nil)
+--     end
+-- end
+-- function NugRunning.POWER_LEVEL_CHANGED(event, plevelfull)
+--     local plevel = NugRunning:GetPowerLevel() -- without damage multipliers
+--     for timer in pairs(active) do
+--         if timer.opts.showpower and timer.powerLevel and not timer.isGhost then
+--             -- timer:SetName(timer.powerLevel)
+--             NugRunning:UpdateTimerPower(timer, plevel)
+--         else
+--             timer:SetPowerStatus(nil)
+--         end
+--     end
+-- end
 
 function NugRunning.UNIT_COMBO_POINTS(self,event,unit)
     if unit ~= "player" then return end
@@ -1118,8 +1290,23 @@ function NugRunning.UNIT_COMBO_POINTS(self,event,unit)
 end
 function NugRunning.ReInitSpells(self,event,arg1)
     for id,opts in pairs(NugRunningConfig) do
-        if type(opts) == "table" and opts.init_done then
+        if type(opts) == "table" and opts.init then
             opts:init()
+            opts.init_done = true
+        end
+    end
+    for event, timers in pairs(NugRunningConfig.event_timers) do
+        for _, opts in pairs(timers) do
+            if opts.init then
+                opts:init()
+                opts.init_done = true
+            end
+        end
+    end
+    for id,opts in pairs(NugRunningConfig.cooldowns) do
+        if opts.init then
+            opts:init()
+            opts.init_done = true
         end
     end
 end
@@ -1138,10 +1325,14 @@ end
 
 function NugRunning.Unlock(self)
     local prev
-    for i,timer in ipairs(alltimers) do
+    local i = 0
+    for timer in pairs(free) do
+        i = i+1
         if i > 7 then break end
         local fakeopts = {}
-        if not timer.opts then timer.opts = fakeopts; timer.startTime = GetTime(); timer.endTime = GetTime()+130-(i*10); end
+        if not timer.opts then timer.opts = fakeopts end
+        timer.startTime = GetTime();
+        timer.endTime = GetTime()+130-(i*10);
         timer:SetIcon("Interface\\Icons\\inv_misc_questionmark")
         timer:SetName("Test timer")
         timer:SetColor(0.4, 0.4, 0.4)
@@ -1166,7 +1357,7 @@ end
 
 
 local function capturesTable()
-    
+
 end
 
 
@@ -1199,7 +1390,7 @@ function NugRunning.SlashCmd(msg)
       |cff00ff00/nrun dotpower|r : turn off dotpower feature
       |cff00ff00/nrun localnames|r: toggle localized spell names
       |cff00ff00/nrun leaveghost|r: don't hide target/player ghosts in combat
-      |cff00ff00/nrun set|r width=120 height=20 fontscale=1.1 growth=up/down
+      |cff00ff00/nrun set|r width=120 height=20 growth=up/down
       |cff00ff00/nrun setpos|r anchor=main point=CENTER parent=UIParent to=CENTER x=0 y=0]]
     )end
     if k == "unlock" then
@@ -1261,8 +1452,12 @@ function NugRunning.SlashCmd(msg)
     if k == "cooldowns" then
         if NRunDB.cooldownsEnabled then
             NugRunning:UnregisterEvent("SPELL_UPDATE_COOLDOWN")
+            if NugRunning.cooldownTicker then NugRunning.cooldownTicker:Cancel() end
         else
             NugRunning:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+            NugRunning.cooldownTicker = C_Timer.NewTicker(1, function()
+                NugRunning:SPELL_UPDATE_COOLDOWN("PERIODIC_COOLDOWN_UPDATE", true)
+            end)
         end
         NRunDB.cooldownsEnabled = not NRunDB.cooldownsEnabled
         print("NRun cooldowns "..(NRunDB.cooldownsEnabled and "enabled" or "disabled"))
@@ -1317,10 +1512,18 @@ function NugRunning.SlashCmd(msg)
         local p = ParseOpts(v)
         NRunDB.width = p["width"] or NRunDB.width
         NRunDB.height = p["height"] or NRunDB.height
-        NRunDB.growth = p["growth"] or NRunDB.growth
+        aname = p["anchor"]
+        if aname then
+            local growth = p["growth"]
+            if NRunDB.anchors[aname] and growth then
+                NRunDB.anchors[aname].growth = growth
+            end
+        else
+            NRunDB.growth = p["growth"] or NRunDB.growth
+        end
         for i,timer in ipairs(alltimers) do
             timer:Resize(NRunDB.width, NRunDB.height)
-            
+
         end
         if NugRunning.unlocked  then
             NugRunning:Unlock()
@@ -1346,7 +1549,7 @@ function NugRunning.SlashCmd(msg)
     if k == "debug" then
         if not NugRunning.debug then
             NugRunning.debug = CreateFrame("Frame")
-            NugRunning.debug:SetScript("OnEvent",function( self, event, timestamp, eventType, hideCaster, 
+            NugRunning.debug:SetScript("OnEvent",function( self, event, timestamp, eventType, hideCaster,
                                                             srcGUID, srcName, srcFlags, srcFlags2,
                                                             dstGUID, dstName, dstFlags, dstFlags2,
                                                             spellID, spellName, spellSchool, auraType, amount)
@@ -1368,18 +1571,18 @@ function NugRunning:CreateAnchor(name, opts)
     f:EnableMouse(true)
     f:SetMovable(true)
     f:Hide()
-    
+
     local t = f:CreateTexture(nil,"BACKGROUND")
     t:SetTexture("Interface\\Buttons\\UI-RadioButton")
     t:SetTexCoord(0,0.25,0,1)
     t:SetAllPoints(f)
-    
+
     t = f:CreateTexture(nil,"BACKGROUND")
     t:SetTexture("Interface\\Buttons\\UI-RadioButton")
     t:SetTexCoord(0.25,0.49,0,1)
     t:SetVertexColor(1, 0, 0)
     t:SetAllPoints(f)
-    
+
     if not NRunDB.anchors[name] then
         NRunDB.anchors[name] = { point = "CENTER", parent ="UIParent", to = "CENTER", x = 0, y = 0}
     end
@@ -1441,8 +1644,14 @@ do
     NugRunning.UnitAffiliationCheck = UnitAffiliationCheck
 
     local last_taget_update = 0
+    local present_spells = {}
     local function UpdateUnitAuras(unit)
             local up = hUnits[unit]
+            if not up then
+                if string.sub(unit, 1, 9) == "nameplate" then
+                    up = 2
+                end
+            end
             if not up then return end
             local unitGUID = UnitGUID(unit)
             if up == 2 and UnitGUID("target") == unitGUID then return end
@@ -1452,21 +1661,47 @@ do
                 -- if now - last_taget_update < 200 then return end
             -- end
 
-            for timer in pairs(active) do 
+            -- for timer in pairs(active) do
+            --     if  timer.dstGUID == unitGUID and
+            --         (timer.timerType == "BUFF" or timer.timerType == "DEBUFF")
+            --     then
+            --             NugRunning:SetUnitAuraValues(timer, timer.spellID, UnitAura(unit, GetSpellInfo(timer.spellID), nil, timer.filter))
+            --     end
+            -- end
+            table_wipe(present_spells)
+
+            for _, filter in ipairs(filters) do
+                local timerType = filter == "HELPFUL" and "BUFF" or "DEBUFF"
+                for i=1,200 do
+                    local name, _,_, count, _, duration, expirationTime, caster, _,_, aura_spellID = UnitAura(unit, i, filter)
+                    if not name then break end
+
+                    local opts = config[aura_spellID]
+                    if opts and UnitAffiliationCheck(caster, opts.affiliation) then--and (unit ~= "mouseover" or not opts.singleTarget) then
+
+                            local timer
+                            timer = gettimer(active, aura_spellID, unitGUID, timerType)
+                            if timer then
+                                NugRunning:SetUnitAuraValues(timer, timer.spellID, UnitAura(unit, GetSpellInfo(timer.spellID), nil, timer.filter))
+                            else
+                                timer = NugRunning:ActivateTimer(playerGUID, unitGUID, UnitName(unit), nil, aura_spellID, name, opts, timerType, duration, count, true)
+                                if timer then
+                                timer:SetTime( expirationTime - duration, expirationTime, timer.fixedoffset)
+                                end
+                            end
+
+                        present_spells[aura_spellID] = true
+                    end
+                end
+            end
+            for timer in pairs(active) do
                 if  timer.dstGUID == unitGUID and
+                    timer.srcGUID == playerGUID and
+                    not present_spells[timer.spellID] and
                     (timer.timerType == "BUFF" or timer.timerType == "DEBUFF")
                 then
-                        -- local name, _,_, count, _, duration, expirationTime, caster, _,_, aura_spellID = UnitAura(unit, GetSpellInfo(timer.spellID), nil, timer.filter)
-                        NugRunning:SetUnitAuraValues(timer, timer.spellID, UnitAura(unit, GetSpellInfo(timer.spellID), nil, timer.filter))
-                        -- if UnitAffiliationCheck(caster, timer.opts.affiliation) and timer.spellID == aura_spellID then
-                            -- NugRunning:RefreshTimer(playerGUID,unitGUID,UnitName(unit),nil, timer.spellID, timer.spellName, timer.opts, timer.timerType, duration, count, true)
-                            -- if (now + duration - expirationTime < 0.1) then
-                                
-                            -- else
-                            -- if count and timer.count ~= count then
-                                -- NugRunning:RemoveDose(playerGUID, unitGUID, aura_spellID, timer.spellName, timer.timerType, count)
-                            -- end
-                        -- end
+                    free[timer] = true
+                    NugRunning:ArrangeTimers()
                 end
             end
     end
@@ -1489,11 +1724,15 @@ do
                     -- end
                 else
                     if timer.opts.singleTarget then
+                        timer.isGhost = true
+                        timer.expiredGhost = true
                         free[timer] = true
+                        timer.isGhost = nil
+                        timer.expiredGhost = nil
                     end
                 end
             end
-            
+
             for _, filter in ipairs(filters) do
                 for i=1,100 do
                     local name, _,_, count, _, duration, expirationTime, caster, _,_, aura_spellID = UnitAura("target", i, filter)
@@ -1518,7 +1757,7 @@ do
                             timerType = filter == "HELPFUL" and "BUFF" or "DEBUFF"
                             newtimer = NugRunning:ActivateTimer(playerGUID, targetGUID, UnitName("target"), nil, aura_spellID, name, config[aura_spellID], timerType, duration, count, true)
                         end
-                        if newtimer then newtimer:SetTime( expirationTime - duration + newtimer.fixedoffset, expirationTime) end
+                        if newtimer then newtimer:SetTime( expirationTime - duration, expirationTime, newtimer.fixedoffset) end
                     end
                 end
             end
@@ -1563,3 +1802,125 @@ function NugRunning:SoulSwapUsed(active, srcGUID, dstGUID, spellID )
     ssPendingTarget = dstGUID
 end
 
+
+
+function NugRunning:CreateCastbarTimer(timer)
+    local f = timer
+    NugRunning.free[timer] = nil
+    self.castbar = timer
+
+    f.stacktext:Hide()
+    -- f:SetScript("OnUpdate",TimerOnUpdate)
+    f.unit = "player"
+    f.dstGUID = UnitGUID("player")
+    f.srcGUID = UnitGUID("player")
+    f.dontfree = true
+    -- f.priority = 9001
+    f.opts = {}
+
+
+    f:RegisterEvent("UNIT_SPELLCAST_START")
+    f:RegisterEvent("UNIT_SPELLCAST_DELAYED")
+    -- f:RegisterEvent("PLAYER_TARGET_CHANGED")
+    f:RegisterEvent("UNIT_SPELLCAST_STOP")
+    f:RegisterEvent("UNIT_SPELLCAST_FAILED")
+    f:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+    f:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+    f:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+    f:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+
+    f:SetScript("OnEvent", function(self, event, ...)
+        -- print(event, ...)
+        return f[event](self, event, ...)
+    end)
+
+    f.UpdateCastingInfo = function(self,name, texture, startTimeInt, endTimeInt, opts)
+        local timer = self
+
+        self.opts = opts
+        self.priority = opts.priority or 0
+        -- timer.fixedoffset = opts.fixedlen and time - opts.fixedlen or 0
+
+        self:SetColor(unpack(opts.color or { 0.6, 0, 1 }))
+        self.icon:SetTexture(texture)
+        self.spellText:SetText(opts.name or opts.localname)
+
+        if opts.tick and NRunDB.dotticks then
+            timer.tickPeriod = opts.tick > 0 and (opts.tick/(1+(UnitSpellHaste("player")/100))) or math.abs(opts.tick)
+            timer.mark.fullticks = nil
+        else
+            timer.tickPeriod = nil
+        end
+
+        local startTime = startTimeInt /1000
+        local endTime = endTimeInt /1000
+        local duration = endTime - startTime
+        timer.fixedoffset = timer.opts.fixedlen and duration - timer.opts.fixedlen or 0
+        timer:SetTime(startTime, startTime + duration, timer.fixedoffset)
+
+        local arrow = opts.arrow
+        if arrow then
+            local color = arrow[3] and arrow or {1,0,0}
+            timer.arrow:SetVertexColor(unpack(color))
+            timer.arrow:Show()
+        else
+            timer.arrow:Hide()
+        end
+        -- self.startTime = startTime / 1000
+        -- self.endTime = endTime / 1000
+        -- self.bar:SetMinMaxValues(self.startTime,self.endTime)
+        -- local color = NRunCast.coloredSpells[name] or  { 0.6, 0, 1 }
+        -- local color = { 0.6, 0, 1 }
+        -- self.bar:SetStatusBarColor(unpack(color))
+        -- self.bar.bg:SetVertexColor(color[1]*.5,color[2]*.5,color[3]*.5)
+        self:Show()
+    end
+
+
+    function f.UNIT_SPELLCAST_START(self,event, unit, spellName, rank, castID, spellID)
+        if unit ~= self.unit then return end
+        if not config.casts[spellID] then return end
+        local opts = config.casts[spellID]
+
+        local name, subText, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo(unit)
+        self.inverted = false
+        self.castID = castID
+        self:UpdateCastingInfo(name,texture,startTime,endTime, opts)
+        NugRunning.active[self] = true
+        NugRunning:ArrangeTimers()
+    end
+    f.UNIT_SPELLCAST_DELAYED = f.UNIT_SPELLCAST_START
+    function f.UNIT_SPELLCAST_CHANNEL_START(self,event, unit, spellName, rank, castID, spellID)
+        if unit ~= self.unit then return end
+        if not config.casts[spellID] then return end
+        local opts = config.casts[spellID]
+
+        local name, subText, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitChannelInfo(unit)
+        self.inverted = true
+        self.castID = castID
+        self:UpdateCastingInfo(name,texture,startTime,endTime, opts)
+
+        NugRunning.active[self] = true
+        NugRunning:ArrangeTimers()
+    end
+    f.UNIT_SPELLCAST_CHANNEL_UPDATE = f.UNIT_SPELLCAST_CHANNEL_START
+    function f.UNIT_SPELLCAST_STOP(self,event, unit, spellName, rank, castID, spellID)
+        if unit ~= self.unit then return end
+        self:Hide()
+        NugRunning.active[self] = nil
+        NugRunning:ArrangeTimers()
+    end
+    function f.UNIT_SPELLCAST_FAILED(self, event, unit, spell, _,castID)
+        if unit ~= self.unit then return end
+        if self.castID == castID then self.UNIT_SPELLCAST_STOP(self, event, unit, spell) end
+    end
+    f.UNIT_SPELLCAST_INTERRUPTED = f.UNIT_SPELLCAST_STOP
+    f.UNIT_SPELLCAST_CHANNEL_STOP = f.UNIT_SPELLCAST_STOP
+
+
+    function f.PLAYER_TARGET_CHANGED(self)
+        local newguid = UnitGUID("target") or UnitGUID("player")
+        self.dstGUID = newguid
+        NugRunning:ArrangeTimers()
+    end
+end

@@ -5,7 +5,6 @@ local A = ns.A
 --	Armory link on right click player name in chat
 if not cfg.modules.chat.armory_link then return end
 local realmName = string.lower(GetRealmName())
-local realmLocal = string.sub(GetCVar("realmList"), 1, 2)
 local link
 
 realmName = realmName:gsub("'", "")
@@ -59,25 +58,25 @@ hooksecurefunc("UnitPopup_OnClick", function(self)
 	local name = dropdownFrame.name
 	if name and self.value == "ARMORYLINK" then
 		--local inputBox = StaticPopup_Show("LINK_COPY_DIALOG")
-		if realmLocal == "us" then
+		if link == "us" then
 			linkurl = "http://us.battle.net/wow/"..link.."/character/"..realmName.."/"..name.."/advanced"
 			PutInEditbox(linkurl)
 			--inputBox.editBox:SetText(linkurl)
 			--inputBox.editBox:HighlightText()
 			return
-		elseif realmLocal == "eu" then
+		elseif link == "eu" then
 			linkurl = "http://eu.battle.net/wow/"..link.."/character/"..realmName.."/"..name.."/advanced"
 			PutInEditbox(linkurl)
 			--inputBox.editBox:SetText(linkurl)
 			--inputBox.editBox:HighlightText()
 			return
-		elseif realmLocal == "tw" then
+		elseif link == "tw" then
 			linkurl = "http://tw.battle.net/wow/"..link.."/character/"..realmName.."/"..name.."/advanced"
 			PutInEditbox(linkurl)
 			--inputBox.editBox:SetText(linkurl)
 			--inputBox.editBox:HighlightText()
 			return
-		elseif realmLocal == "kr" then
+		elseif link == "kr" then
 			linkurl = "http://kr.battle.net/wow/"..link.."/character/"..realmName.."/"..name.."/advanced"
 			PutInEditbox(linkurl)
 			--inputBox.editBox:SetText(linkurl)

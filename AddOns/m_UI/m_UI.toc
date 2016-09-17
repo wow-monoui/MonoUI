@@ -1,4 +1,4 @@
-## Interface: 50400
+## Interface: 70000
 ## Notes: Compilation of essential UI elements.
 ## Title: mono|cffffffffUIelements|r
 ## Author: Monolit
@@ -23,7 +23,7 @@ elements\skins\StyleBW.lua
 elements\skins\StyleNRun.lua
 elements\skins\StyleBlizTimer.lua
 elements\skins\StyleSkada.lua
-	
+
 elements\automation\Mountz.lua
 elements\automation\shoutCD.lua
 elements\automation\MailGet.lua
@@ -62,4 +62,3 @@ elements\modules\tooltip_spellID.lua
 elements\modules\xp_bar.lua
 
 elements\test\test.lua
-

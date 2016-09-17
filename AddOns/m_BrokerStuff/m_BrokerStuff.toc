@@ -1,11 +1,11 @@
-## Interface: 50400
+## Interface: 70000
 ## Author: Monolit
 ## Version: 1.6.0
 ## Title: mono|cffffffffBrokerStuff|r
 ## Notes: Broker plugins compilation
 ## X-Credits: All the original authors: Funkydude(Durability), p3lim(Equipment), Curney(NameToggle), Torhal(Volumizer)
 ## SavedVariables: MoneyDB
-## SavedVariablesPerCharacter: Broker_EquipmentDB, SB_MEM_KILL 
+## SavedVariablesPerCharacter: Broker_EquipmentDB, SB_MEM_KILL
 
 libs\LibStub.lua
 libs\tekKonfigScroll.lua

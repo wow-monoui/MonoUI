@@ -9,5 +9,9 @@
 ## X-Curse-Project-Name: LibStub
 ## X-Curse-Project-ID: libstub
 ## X-Curse-Repository-ID: wow/libstub/mainline
+## X-Curse-Packaged-Version: 7.0.9
+## X-Curse-Project-Name: NugRunning
+## X-Curse-Project-ID: nugrunning
+## X-Curse-Repository-ID: wow/nugrunning/mainline
 
 LibStub.lua

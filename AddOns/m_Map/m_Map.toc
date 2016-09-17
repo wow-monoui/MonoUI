@@ -1,4 +1,4 @@
-## Interface: 50400
+## Interface: 70000
 ## Notes: World Map modifications
 ## Title: mono|cffffffffMap|r
 ## Author: Monolit

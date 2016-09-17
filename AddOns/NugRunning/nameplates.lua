@@ -11,77 +11,37 @@ local plates = {}
 local oldTargetGUID
 local guidmap = {}
 
-local function OnHide(frame)
-    local frame_guid = frame.guid
-    if frame_guid then
-        guidmap[frame_guid] = nil
-        frame.guid = nil
-        if frame_guid == oldTargetGUID then
-            oldTargetGUID = nil
-        end
-    end
+local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
+
+NugRunningNameplates = CreateFrame("Frame")
+
+NugRunningNameplates:RegisterEvent("NAME_PLATE_CREATED")
+NugRunningNameplates:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+NugRunningNameplates:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+
+
+local activeNameplates = {}
+
+function NugRunningNameplates.NAME_PLATE_CREATED(self, event, frame)
+    frame.timers = {}
+    frame:GetChildren().BuffFrame:Hide()
+end
+
+function NugRunningNameplates.NAME_PLATE_UNIT_ADDED(self, event, unit)
+    activeNameplates[unit] = true
+    local pGUID = UnitGUID(unit)
+    local frame = GetNamePlateForUnit(unit)
+    local guidTimers = NugRunning:GetTimersByDstGUID(pGUID)
+    NugRunningNameplates:UpdateNPTimers(frame, guidTimers)
+end
+
+function NugRunningNameplates.NAME_PLATE_UNIT_REMOVED(self, event, unit)
+    activeNameplates[unit] = nil
+    local frame = GetNamePlateForUnit(unit)
     for _, timer in ipairs(frame.timers) do
         timer:Hide()
     end
 end
-
-local function HookFrames(...)
-    for index=1,select("#", ...) do
-        local frame = select(index, ...)
-        local region = frame:GetRegions()
-        local fname = frame:GetName()
-        if  not plates[frame] and
-            fname and string.find(fname, "NamePlate")
-        then
-            -- local hp, cb = frame:GetChildren()
-            -- local threat, hpborder, overlay, oldname, oldlevel, bossicon, raidicon, elite = frame:GetRegions()
-            -- local _, cbborder, cbshield, cbicon = cb:GetRegions()
-            
-            -- 5.1 format
-            local f = frame --nameplateframe
-            f.barFrame, f.nameFrame = f:GetChildren()
-            -- f.barFrame.threat, f.barFrame.border, f.barFrame.highlight, f.barFrame.level, f.barFrame.boss, f.barFrame.raid, f.barFrame.dragon = f.barFrame:GetRegions()
-            f.nameFrame.name = f.nameFrame:GetRegions()
-            -- f.barFrame.healthbar, f.barFrame.castbar = f.barFrame:GetChildren()
-            -- f.barFrame.healthbar.texture =  f.barFrame.healthbar:GetRegions()
-            -- f.barFrame.castbar.texture, f.barFrame.castbar.border, f.barFrame.castbar.shield, f.barFrame.castbar.icon =  f.barFrame.castbar:GetRegions()
-            frame.name = f.nameFrame.name
-            frame.timers = {}
-            -- frame.healthBar = healthBar
-            -- frame.castBar = castBar
-            plates[frame] = true
-            frame:HookScript("OnHide", OnHide)
-        end
-    end
-end
-
-NugRunningNameplates = CreateFrame("Frame")
-NugRunningNameplates:SetScript('OnUpdate', function(self, elapsed)
-    if(WorldFrame:GetNumChildren() ~= Nplates) then
-        Nplates = WorldFrame:GetNumChildren()
-        HookFrames(WorldFrame:GetChildren())
-    end
-    if UnitExists("target") then
-        local targetGUID = UnitGUID("target")
-        for frame in pairs(plates) do
-            if frame:IsShown() then
-                if frame:GetAlpha() == 1 and
-                    (UnitName("target") == frame.name:GetText()) and
-                    targetGUID ~= oldTargetGUID then
-                        guidmap[targetGUID] =  frame
-                        frame.guid = targetGUID
-                        oldTargetGUID = targetGUID
-                        local guidTimers = NugRunning:GetTimersByDstGUID(targetGUID)
-                        NugRunningNameplates:UpdateNPTimers(frame, guidTimers)
-                        return
-                        -- frame.name:SetText(targetGUID)
-                end
-            end
-        end
-    else
-        oldTargetGUID = nil
-    end
-end)
 
 local MiniOnUpdate = function(self, time)
     self._elapsed = self._elapsed + time
@@ -101,7 +61,9 @@ local backdrop = {
     }
 
 function NugRunningNameplates:CreateNameplateTimer(frame)
-    local f = CreateFrame("StatusBar", nil, frame)
+    local parented = confignp.parented
+    local f = CreateFrame("StatusBar")
+    if parented then f:SetParent(frame) end
     f:SetStatusBarTexture([[Interface\AddOns\NugRunning\statusbar]], "OVERLAY")
     local w = confignp.width
     local h = confignp.height
@@ -150,9 +112,14 @@ function NugRunningNameplates:Update(targetTimers, guidTimers, targetSwapping)
             guidTimers[tGUID] = targetTimers
         end
     end
-    for guid, np in pairs(guidmap) do
-        local nrunTimers = guidTimers[guid]
-        self:UpdateNPTimers(np, nrunTimers)
+
+    for unit in pairs(activeNameplates) do
+        local np = GetNamePlateForUnit(unit)
+        if np then
+            local guid = UnitGUID(unit)
+            local nrunTimers = guidTimers[guid]
+            self:UpdateNPTimers(np, nrunTimers)
+        end
     end
 end
 

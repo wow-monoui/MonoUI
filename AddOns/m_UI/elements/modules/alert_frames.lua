@@ -7,7 +7,7 @@ local POSITION, ANCHOR_POINT, YOFFSET = "BOTTOM", "BOTTOM", -10
 
 local function fixAnchors(screenQuadrant)
 	POSITION = pos or POSITION
-	
+
 	if POSITION == 'TOP' then
 		ANCHOR_POINT = 'BOTTOM'
 		YOFFSET = -10
@@ -15,15 +15,15 @@ local function fixAnchors(screenQuadrant)
 		ANCHOR_POINT = 'TOP'
 		YOFFSET = 10
 	end
-	
+
 	AlertFrame:ClearAllPoints()
 	AlertFrame:SetAllPoints(m_AlertMover)
-	
+
 	if screenQuadrant then
 		AlertFrame_FixAnchors()
 	end
 end
-hooksecurefunc("AlertFrame_FixAnchors", fixAnchors)
+-- hooksecurefunc("AlertFrame_FixAnchors", fixAnchors)
 
 local function AlertFrame_SetLootAnchors(alertAnchor)
 	--This is a bit of reverse logic to get it to work properly because blizzard was a bit lazy..
@@ -33,13 +33,13 @@ local function AlertFrame_SetLootAnchors(alertAnchor)
 		if ( GroupLootContainer:IsShown() ) then
 			GroupLootContainer:ClearAllPoints()
 			GroupLootContainer:SetPoint(POSITION, MissingLootFrame, ANCHOR_POINT, 0, YOFFSET)
-		end		
+		end
 	elseif ( GroupLootContainer:IsShown() ) then
 		GroupLootContainer:ClearAllPoints()
-		GroupLootContainer:SetPoint(POSITION, alertAnchor, ANCHOR_POINT)	
+		GroupLootContainer:SetPoint(POSITION, alertAnchor, ANCHOR_POINT)
 	end
 end
-hooksecurefunc("AlertFrame_SetLootAnchors", AlertFrame_SetLootAnchors)
+-- hooksecurefunc("AlertFrame_SetLootAnchors", AlertFrame_SetLootAnchors)
 
 local function AlertFrame_SetLootWonAnchors(alertAnchor)
 	for i=1, #LOOT_WON_ALERT_FRAMES do
@@ -51,7 +51,7 @@ local function AlertFrame_SetLootWonAnchors(alertAnchor)
 		end
 	end
 end
-hooksecurefunc("AlertFrame_SetLootWonAnchors", AlertFrame_SetLootWonAnchors)
+-- hooksecurefunc("AlertFrame_SetLootWonAnchors", AlertFrame_SetLootWonAnchors)
 
 local function AlertFrame_SetMoneyWonAnchors(alertAnchor)
 	for i=1, #MONEY_WON_ALERT_FRAMES do
@@ -63,7 +63,7 @@ local function AlertFrame_SetMoneyWonAnchors(alertAnchor)
 		end
 	end
 end
-hooksecurefunc("AlertFrame_SetMoneyWonAnchors", AlertFrame_SetMoneyWonAnchors)
+-- hooksecurefunc("AlertFrame_SetMoneyWonAnchors", AlertFrame_SetMoneyWonAnchors)
 
 local function AlertFrame_SetAchievementAnchors(alertAnchor)
 	if ( AchievementAlertFrame1 ) then
@@ -77,7 +77,7 @@ local function AlertFrame_SetAchievementAnchors(alertAnchor)
 		end
 	end
 end
-hooksecurefunc("AlertFrame_SetAchievementAnchors", AlertFrame_SetAchievementAnchors)
+-- hooksecurefunc("AlertFrame_SetAchievementAnchors", AlertFrame_SetAchievementAnchors)
 
 local function AlertFrame_SetCriteriaAnchors(alertAnchor)
 	if ( CriteriaAlertFrame1 ) then
@@ -91,7 +91,7 @@ local function AlertFrame_SetCriteriaAnchors(alertAnchor)
 		end
 	end
 end
-hooksecurefunc("AlertFrame_SetCriteriaAnchors", AlertFrame_SetCriteriaAnchors)
+-- hooksecurefunc("AlertFrame_SetCriteriaAnchors", AlertFrame_SetCriteriaAnchors)
 
 local function AlertFrame_SetChallengeModeAnchors(alertAnchor)
 	local frame = ChallengeModeAlertFrame1;
@@ -100,7 +100,7 @@ local function AlertFrame_SetChallengeModeAnchors(alertAnchor)
 		frame:SetPoint(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET);
 	end
 end
-hooksecurefunc("AlertFrame_SetChallengeModeAnchors", AlertFrame_SetChallengeModeAnchors)
+-- hooksecurefunc("AlertFrame_SetChallengeModeAnchors", AlertFrame_SetChallengeModeAnchors)
 
 local function AlertFrame_SetDungeonCompletionAnchors(alertAnchor)
 	local frame = DungeonCompletionAlertFrame1;
@@ -109,7 +109,7 @@ local function AlertFrame_SetDungeonCompletionAnchors(alertAnchor)
 		frame:SetPoint(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET);
 	end
 end
-hooksecurefunc("AlertFrame_SetDungeonCompletionAnchors", AlertFrame_SetDungeonCompletionAnchors)
+-- hooksecurefunc("AlertFrame_SetDungeonCompletionAnchors", AlertFrame_SetDungeonCompletionAnchors)
 
 local function AlertFrame_SetScenarioAnchors(alertAnchor)
 	local frame = ScenarioAlertFrame1;
@@ -118,7 +118,7 @@ local function AlertFrame_SetScenarioAnchors(alertAnchor)
 		frame:SetPoint(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET);
 	end
 end
-hooksecurefunc("AlertFrame_SetScenarioAnchors", AlertFrame_SetScenarioAnchors)
+-- hooksecurefunc("AlertFrame_SetScenarioAnchors", AlertFrame_SetScenarioAnchors)
 
 local function AlertFrame_SetGuildChallengeAnchors(alertAnchor)
 	local frame = GuildChallengeAlertFrame;
@@ -127,13 +127,13 @@ local function AlertFrame_SetGuildChallengeAnchors(alertAnchor)
 		frame:SetPoint(POSITION, alertAnchor, ANCHOR_POINT, 0, YOFFSET);
 	end
 end
-hooksecurefunc("AlertFrame_SetGuildChallengeAnchors", AlertFrame_SetGuildChallengeAnchors)
+-- hooksecurefunc("AlertFrame_SetGuildChallengeAnchors", AlertFrame_SetGuildChallengeAnchors)
 
-hooksecurefunc(GroupLootContainer, 'SetPoint', function(self, point, anchorTo, attachPoint, xOffset, yOffset)
-	if _G[anchorTo] == UIParent then
-		AlertFrame_FixAnchors()
-	end
-end)
+-- hooksecurefunc(GroupLootContainer, 'SetPoint', function(self, point, anchorTo, attachPoint, xOffset, yOffset)
+-- 	if _G[anchorTo] == UIParent then
+-- 		AlertFrame_FixAnchors()
+-- 	end
+-- end)
 
 --[[  SlashCmdList.TEST_ACHIEVEMENT = function()
 	PlaySound("LFG_Rewards")
@@ -146,11 +146,11 @@ end)
 	AlertFrame_AnimateIn(CriteriaAlertFrame1)
 	AlertFrame_AnimateIn(DungeonCompletionAlertFrame1)
 	AlertFrame_AnimateIn(ScenarioAlertFrame1)
-	
+
 	local _, itemLink = GetItemInfo(6948)
 	LootWonAlertFrame_ShowAlert(itemLink, -1, 1, 1)
 	MoneyWonAlertFrame_ShowAlert(1)
-	
+
 	AlertFrame_FixAnchors()
 end
 SLASH_TEST_ACHIEVEMENT1 = "/testalerts"  ]]

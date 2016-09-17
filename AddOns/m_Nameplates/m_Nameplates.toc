@@ -1,4 +1,4 @@
-## Interface: 50400
+## Interface: 70000
 ## Author: Monolit
 ## Title: mono|cffffffffNameplates|r
 ## Version: 5.0

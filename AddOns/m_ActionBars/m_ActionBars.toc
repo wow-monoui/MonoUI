@@ -1,4 +1,4 @@
-## Interface: 50400
+## Interface: 70000
 ## Title: mono|cffffffffActionBars|r
 ## Author: Monolit
 ## Notes: Action bar styling

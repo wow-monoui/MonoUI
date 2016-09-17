@@ -21,19 +21,41 @@ function TimerBar.SetCount(self,amount)
     if self.opts.stackcolor then
         self:SetColor(unpack(self.opts.stackcolor[amount]))
     end
+    if self.opts.glowstack then
+        if self.glow then
+            if amount >= self.opts.glowstack then
+                if not self.glow:IsPlaying() then self.glow:Play() end
+            else
+                self.glow:Stop()
+            end
+        end
+    end
     self.stacktext:SetText(amount)
     if amount > 1 then self.stacktext:Show()
     else self.stacktext:Hide() end
 end
 
-function TimerBar.SetTime(self,s,e)
+function TimerBar.SetTime(self, s,e, fixedoffset, animProgress)
+    animProgress = animProgress or 1
+    fixedoffset = fixedoffset or self.fixedoffset
+    if not fixedoffset then fixedoffset = 0 end
+    s = s or self.startTime
+    e = e or self.endTime
     self.startTime = s
     self.endTime = e
+    if not self._isMinimized then
+        s = self.startTime + (fixedoffset*animProgress)
+    end
+    self._startTimeModified = s
+
+
+
     self.bar:SetMinMaxValues(s,e)
     self:UpdateMark()
 end
 local function getbarpos(timer, time)
-    local duration = timer.endTime - timer.startTime
+    local duration = timer.endTime - (timer._startTimeModified or timer.startTime)
+    if duration == 0 then return 0 end
     if time >= 0 then
         return time / duration * timer.bar:GetWidth(), time / duration
     else
@@ -43,7 +65,7 @@ end
 
 function TimerBar.MoveMark(self, time)
     local pos, percent = getbarpos(self, time)
-    self.mark:SetPoint("CENTER",self.bar,"LEFT",pos,0)
+    self.mark:SetPoint("LEFT",self.bar,"LEFT",pos,0)
     if percent < 0.02 then
         self.mark:Hide()
         self.mark.texture:Hide()
@@ -62,6 +84,8 @@ local function clear_overlay_point(p, self, ticktime)
             return min(ticktime+self.tickPeriod, self.endTime-self.startTime)
         elseif p == "end" then
             return self.endTime-self.startTime
+        elseif p == "gcd" then
+            return (1.5/(1+(UnitSpellHaste("player")/100)))
         end
     else return p end
 end
@@ -71,7 +95,7 @@ function TimerBar.UpdateMark(self, time) -- time - usually closest tick time
         if time then
             if time > 0 then
                 local pos = getbarpos(self, time)
-                self.mark:SetPoint("CENTER",self.bar,"LEFT",pos,0)
+                self.mark:SetPoint("LEFT",self.bar,"LEFT",pos,0)
                 self.mark:Show()
                 self.mark.texture:Show()
             else
@@ -80,9 +104,9 @@ function TimerBar.UpdateMark(self, time) -- time - usually closest tick time
             end
         end
     elseif self.opts.recast_mark then
-        local rm = self.opts.recast_mark
+        local rm = clear_overlay_point(self.opts.recast_mark, self, time)
         local pos = getbarpos(self, rm)
-        self.mark:SetPoint("CENTER",self.bar,"LEFT",pos,0)
+        self.mark:SetPoint("LEFT",self.bar,"LEFT",pos,0)
         self.mark.spark:CatchUp()
         self.mark:Show()
         self.mark.texture:Show()
@@ -91,26 +115,26 @@ function TimerBar.UpdateMark(self, time) -- time - usually closest tick time
         self.mark.texture:Hide()
     end
 
-    local overlay = self.opts.overlay
-    if overlay then
-        local t1 = clear_overlay_point(overlay[1], self, time)
-        local t2 = clear_overlay_point(overlay[2], self, time)
+    local overlay2 = self.opts.overlay
+    if overlay2 then
+        local t1 = clear_overlay_point(overlay2[1], self, time)
+        local t2 = clear_overlay_point(overlay2[2], self, time)
         if not t1 or not t2 then
             return -- skip when point contains "tick" or "tickend", but it's not tick update call
         end
         local pos1 = getbarpos(self, t1)
         local pos2 = getbarpos(self, t2)
-        local alpha = overlay[3] or 0.2
+        local alpha = overlay2[3] or 0.2
         if pos2 > pos1 then
-            self.overlay:SetPoint("TOPLEFT", self.bar, "TOPLEFT", pos1, 0)
-            self.overlay:SetPoint("BOTTOMRIGHT", self.bar, "BOTTOMLEFT", pos2, 0)
-            self.overlay:SetVertexColor(0,0,0, alpha)
-            self.overlay:Show()
+            self.overlay2:SetPoint("TOPLEFT", self.bar, "TOPLEFT", pos1, 0)
+            self.overlay2:SetPoint("BOTTOMRIGHT", self.bar, "BOTTOMLEFT", pos2, 0)
+            self.overlay2:SetVertexColor(0,0,0, alpha)
+            self.overlay2:Show()
         else
-            self.overlay:Hide()
+            self.overlay2:Hide()
         end
     else
-        self.overlay:Hide()
+        self.overlay2:Hide()
     end
 end
 function TimerBar.SetMinMaxCharge(self, min, max)
@@ -118,6 +142,9 @@ function TimerBar.SetMinMaxCharge(self, min, max)
 end
 function TimerBar.SetCharge(self,val)
     self.bar:SetValue(val)
+    if self.opts.stackcolor then
+        self:SetColor(unpack(self.opts.stackcolor[val]))
+    end
 end
 
 
@@ -130,10 +157,17 @@ function TimerBar.ToInfinite(self)
 end
 
 function TimerBar.ToGhost(self)
+    if self._isMinimized then
+        local scale = self.opts.scale or 1
+        self:VScale(scale)
+    end
     self:SetColor(0.5,0,0)
     self.timeText:SetText("")
     self.bar:SetValue(0)
+    if self.glow:IsPlaying() then self.glow:Stop() end
     --self:SetAlpha(0.8)
+    self.mark:Hide()
+    self.mark.texture:Hide()
 end
 do
     local hour, minute = 3600, 60
@@ -152,7 +186,7 @@ do
 end
 
 function TimerBar.Update(self, beforeEnd)
-    self.bar:SetValue(beforeEnd + self.startTime)
+    self.bar:SetValue(beforeEnd + (self._startTimeModified or self.startTime))
     self.timeText:SetFormattedText(self:FormatTime(beforeEnd))
 end
 
@@ -167,9 +201,14 @@ function TimerBar.Resize1(self, width, height)
     self.spellText:SetHeight(height/2+1)
 end
 
+function TimerBar.Remains(self)
+    return self.endTime - GetTime()
+end
+
 function TimerBar.VScale(self, scale)
+    if scale == self._scale then return end
     if scale > 1 then scale = 1 end
-    if not self._scale and scale == 1 then return end -- already at full size
+    -- if not self._scale and scale == 1 then return end -- already at full size
 
     self._scale = scale
     local height = self._height * scale
@@ -183,7 +222,17 @@ function TimerBar.VScale(self, scale)
     self.shine:Stop()
     self.shine.tex:SetAlpha(0)
 
-    if scale == 1 then self._scale = nil end
+    self._isMinimized = scale <= 0.4
+
+    if scale < 0.7 then
+        self.spellText:Hide()
+        self.timeText:Hide()
+    else
+        self.spellText:Show()
+        self.timeText:Show()
+    end
+
+    -- if scale == 1 then self._scale = nil end
 end
 
 function TimerBar.Resize(self, width, height)
@@ -229,6 +278,50 @@ function TimerBar.SetPowerStatus(self, status, powerdiff)
     end
 end
 
+function TimerBar.ShowOverlayGlow(self)
+    local self = self.iconframe
+	if ( self.overlay ) then
+		if ( self.overlay.animOut:IsPlaying() ) then
+			self.overlay.animOut:Stop();
+			self.overlay.animIn:Play();
+		end
+	else
+		self.overlay = ActionButton_GetOverlayGlow();
+		local frameWidth, frameHeight = self:GetSize();
+        -- print(frameWidth,frameHeight)
+        -- self.overlay.animIn:Play();
+		-- self.overlay.animIn:Stop();
+		self.overlay:SetParent(self:GetParent());
+		self.overlay:ClearAllPoints();
+		--Make the height/width available before the next frame:
+		self.overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4);
+		self.overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * 0.2, frameHeight * 0.2);
+		self.overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * 0.2, -frameHeight * 0.2);
+		self.overlay.animIn:Play();
+	end
+end
+
+local Redraw = function(self)
+    if not self.model_path then return end
+
+    self:SetModelScale(1)
+    self:SetPosition(0,0,0)
+
+    if type(self.model_path) == "number" then
+        self:SetDisplayInfo(self.model_path)
+    else
+        self:SetModel(self.model_path)
+    end
+    self:SetModelScale(self.model_scale)
+    self:SetPosition(self.ox, self.oy, self.oz)
+end
+
+local ResetTransformations = function(self)
+    -- print(self:GetName(), "hiding", self:GetCameraDistance(), self:GetCameraPosition())
+    self:SetModelScale(1)
+    self:SetPosition(0,0,0)
+end
+
 NugRunning.ConstructTimerBar = function(width, height)
     local f = CreateFrame("Frame",nil,UIParent)
     f.prototype = "TimerBar"
@@ -238,22 +331,24 @@ NugRunning.ConstructTimerBar = function(width, height)
         tile = true, tileSize = 0,
         insets = {left = -2, right = -2, top = -2, bottom = -2},
     }
-    
+
     f:SetWidth(width)
     f:SetHeight(height)
-    
+
     f:SetBackdrop(backdrop)
 	f:SetBackdropColor(0, 0, 0, 0.7)
-    
+
     local ic = CreateFrame("Frame",nil,f)
     ic:SetPoint("TOPLEFT",f,"TOPLEFT", 0, 0)
     ic:SetWidth(height)
     ic:SetHeight(height)
+    ic:SetFrameLevel(1)
     local ict = ic:CreateTexture(nil,"ARTWORK",0)
     ict:SetTexCoord(.1, .9, .1, .9)
     ict:SetAllPoints(ic)
     f.icon = ict
-    
+    f.iconframe = ic
+
     f.stacktext = ic:CreateFontString(nil, "OVERLAY", "GameFontNormal");
     f.stacktext:SetTextColor(1,1,1)
     f.stacktext:SetFont(NugRunningConfig.stackFont.font,
@@ -262,7 +357,7 @@ NugRunning.ConstructTimerBar = function(width, height)
     f.stacktext:SetJustifyH("RIGHT")
     f.stacktext:SetVertexColor(1,1,1)
     f.stacktext:SetPoint("RIGHT", ic, "RIGHT",1,-5)
-    
+
     f.bar = CreateFrame("StatusBar",nil,f)
     f.bar:SetFrameStrata("MEDIUM")
     local texture = NugRunningConfig.texture or "Interface\\AddOns\\NugRunning\\statusbar"
@@ -271,11 +366,11 @@ NugRunning.ConstructTimerBar = function(width, height)
     f.bar:SetHeight(height)
     f.bar:SetWidth(width - height - 1)
     f.bar:SetPoint("TOPRIGHT",f,"TOPRIGHT",0,0)
-    
+
     f.bar.bg = f.bar:CreateTexture(nil, "BORDER")
 	f.bar.bg:SetAllPoints(f.bar)
 	f.bar.bg:SetTexture(texture)
-    
+
     f.timeText = f.bar:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall");
     f.timeText:SetTextColor(1,1,1)
     f.timeText:SetFont(NugRunningConfig.timeFont.font, NugRunningConfig.timeFont.size, NugRunningConfig.timeFont.flags)
@@ -283,7 +378,7 @@ NugRunning.ConstructTimerBar = function(width, height)
     f.timeText:SetAlpha(NugRunningConfig.timeFont.alpha or 1)
     f.timeText:SetVertexColor(1,1,1)
     f.timeText:SetPoint("RIGHT", f.bar, "RIGHT",-6,0)
-    
+
     f.spellText = f.bar:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     f.spellText:SetTextColor(1,1,1)
     f.spellText:SetFont(NugRunningConfig.nameFont.font, NugRunningConfig.nameFont.size, NugRunningConfig.nameFont.flags)
@@ -298,7 +393,30 @@ NugRunning.ConstructTimerBar = function(width, height)
     overlay:SetTexture("Interface\\Tooltips\\UI-Tooltip-Background")
     overlay:SetVertexColor(0,0,0, 0.2)
     overlay:Hide()
-    f.overlay = overlay
+    f.overlay2 = overlay
+
+
+    local arrow = f:CreateTexture(nil, "ARTWORK",nil,3)
+    arrow:SetTexture("Interface\\AddOns\\NugRunning\\white")
+    arrow:SetHeight(height)
+    arrow:SetWidth(height/4)
+    arrow:SetPoint("TOPRIGHT", f, "TOPLEFT",-3, 0)
+    arrow:SetPoint("BOTTOMRIGHT", f, "BOTTOMLEFT",-3, 0)
+    -- arrow:SetPoint("RIGHT", f, "LEFT",0,-5)
+    arrow:SetVertexColor(1,0,0)
+    arrow:Hide()
+
+    local glow2 = arrow:CreateAnimationGroup()
+    local g2a1 = glow2:CreateAnimation("Rotation")
+    -- g2a1:SetChange(0.5)
+    g2a1:SetDegrees(360)
+    g2a1:SetSmoothing("IN_OUT")
+    g2a1:SetDuration(1)
+    g2a1:SetOrder(1)
+    glow2:SetLooping("BOUNCE")
+    f.arrowglow = glow2
+    f.arrow = arrow
+
 
     -- local arrow = f.bar:CreateTexture(nil, "ARTWORK", nil, 5)
     -- arrow:SetSize(11, 10)
@@ -334,8 +452,8 @@ NugRunning.ConstructTimerBar = function(width, height)
     sbg:SetAllPoints(powertext)
     powertext.bg = sbg
     f.status = powertext
-    
-    
+
+
     local at = ic:CreateTexture(nil,"OVERLAY")
     at:SetTexture([[Interface\SpellActivationOverlay\IconAlert]])
     at:SetTexCoord(0.00781250,0.50781250,0.27734375,0.52734375)
@@ -345,26 +463,70 @@ NugRunning.ConstructTimerBar = function(width, height)
     at:SetHeight(height*1.8)
     at:SetPoint("CENTER",f.icon,"CENTER",0,0)
     at:SetAlpha(0)
-    
+
     local sag = at:CreateAnimationGroup()
     local sa1 = sag:CreateAnimation("Alpha")
-    sa1:SetChange(1)
+    sa1:SetFromAlpha(0)
+    sa1:SetToAlpha(1)
     sa1:SetDuration(0.3)
     sa1:SetOrder(1)
     local sa2 = sag:CreateAnimation("Alpha")
-    sa2:SetChange(-1)
+    sa2:SetFromAlpha(1)
+    sa2:SetToAlpha(0)
     sa2:SetDuration(0.5)
-    sa2:SetSmoothing("OUT")
     sa2:SetOrder(2)
-    
-    sag:SetScript("OnFinished",function(self)
-        self:GetParent():SetAlpha(0)
-    end)
+
+    -- sag:SetScript("OnFinished",function(self)
+        -- self:GetParent():SetAlpha(0)
+    -- end)
 
     f.shine = sag
     f.shine.tex = at
-    
-    
+
+
+
+    local pmf = CreateFrame("PlayerModel", nil, f )
+    pmf:SetFrameLevel(0)
+    pmf:SetPoint("CENTER", ic, "LEFT", 0,0)
+    pmf:SetSize(height*4, height*4)
+
+    pmf.model_scale = 1
+    pmf.ox = 0
+    pmf.oy = 0
+    pmf.oz = 0
+
+    pmf.SetEffect = function(self, effect)
+        self.model_path = effect.path
+        local scale = effect.scale or 1
+        self:SetSize(height*scale, height*scale)
+        local x = effect.x or 0
+        local y = effect.y or 0
+        pmf:SetPoint("CENTER", ic, "LEFT", x, y)
+    end
+
+    pmf:SetScript("OnHide", ResetTransformations)
+    pmf:SetScript("OnShow", Redraw)
+    pmf.Redraw = Redraw
+    pmf.ResetTransformations = ResetTransformations
+    pmf:Hide()
+
+    f.effect = pmf
+
+    -- local shineglow = at:CreateAnimationGroup()
+    -- local sg1 = sag:CreateAnimation("Alpha")
+    -- sg1:SetFromAlpha(0)
+    -- sg1:SetToAlpha(1)
+    -- sg1:SetDuration(0.3)
+    -- sg1:SetOrder(1)
+    -- local sg2 = sag:CreateAnimation("Alpha")
+    -- sg2:SetFromAlpha(1)
+    -- sg2:SetToAlpha(0)
+    -- sg2:SetDuration(0.3)
+    -- sg2:SetOrder(2)
+    -- shineglow:SetLooping("BOUNCE")
+    -- f.shineglow = shineglow
+
+
     local aag = f:CreateAnimationGroup()
     local aa1 = aag:CreateAnimation("Scale")
     aa1:SetOrigin("BOTTOM",0,0)
@@ -376,60 +538,63 @@ NugRunning.ConstructTimerBar = function(width, height)
     aa2:SetScale(1,10)
     aa2:SetDuration(0.15)
     aa2:SetOrder(2)
-    
+
     local glow = f:CreateAnimationGroup()
     local ga1 = glow:CreateAnimation("Alpha")
-    ga1:SetChange(-0.5)
+    ga1:SetFromAlpha(1)
+    ga1:SetToAlpha(0.5)
     ga1:SetDuration(0.25)
     ga1:SetOrder(1)
     glow:SetLooping("BOUNCE")
     f.glow = glow
-    
+
     f.animIn = aag
-         
+
     local m = CreateFrame("Frame",nil,self)
     m:SetParent(f)
-    m:SetWidth(16)
+    m:SetWidth(1)
     m:SetHeight(f:GetHeight()*0.9)
     m:SetFrameLevel(4)
     m:SetAlpha(0.6)
-    m:SetPoint("CENTER",f.bar,"LEFT",10,0)
-    
+    m:SetPoint("LEFT",f.bar,"LEFT",10,0)
+
     local texture = m:CreateTexture(nil, "OVERLAY")
-    texture:SetTexture("Interface\\AddOns\\NugRunning\\mark")
-    texture:SetVertexColor(1,1,1,0.3)
+    texture:SetTexture("Interface\\Tooltips\\UI-Tooltip-Background")
+    texture:SetVertexColor(1,1,1,0.8)
     texture:SetAllPoints(m)
     m.texture = texture
-    
+
     local spark = f.bar:CreateTexture(nil, "OVERLAY", nil, 2)
     spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
     spark:SetAlpha(0)
     spark:SetWidth(20)
-    spark:SetHeight(m:GetWidth()*4)
+    spark:SetHeight(16*4)
     -- spark:SetPoint("CENTER",m)
     spark:SetBlendMode('ADD')
     spark.mark = m
     spark.CatchUp = function(self)
-        local markpoint = 
-        self:SetPoint(self.mark:GetPoint())
+        local p1, f, p2, x, y = self.mark:GetPoint()
+        self:SetPoint(p1, f, p2, x-9, y-1)
     end
     spark:CatchUp()
     m.spark = spark
-    
+
     local ag = spark:CreateAnimationGroup()
     local a1 = ag:CreateAnimation("Alpha")
-    a1:SetChange(1)
+    a1:SetFromAlpha(0)
+    a1:SetToAlpha(1)
     a1:SetDuration(0.2)
     a1:SetOrder(1)
     local a2 = ag:CreateAnimation("Alpha")
-    a2:SetChange(-1)
+    a2:SetFromAlpha(1)
+    a2:SetToAlpha(0)
     a2:SetDuration(0.4)
     a2:SetOrder(2)
 
     ag:SetScript("OnFinished", function(self)
         self:GetParent():CatchUp()
     end)
-    
+
     m.shine = ag
 
     f.mark = m

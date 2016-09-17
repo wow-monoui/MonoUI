@@ -1,4 +1,4 @@
-## Interface: 50400
+## Interface: 70000
 ## Notes: Custom MonoUI configuration
 ## Title: mono|cff6FDE90User|r|cffffffffConfig|r
 ## Author: Monolit
@@ -32,4 +32,3 @@ oUF_mono\cfg.lua
 init\oUF_mono.lua
 
 !mCFG.lua
-

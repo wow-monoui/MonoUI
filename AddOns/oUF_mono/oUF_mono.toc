@@ -1,4 +1,4 @@
-## Interface: 50400
+## Interface: 70000
 ## Version: 5.3.1
 ## Title: oUF |cffffffffmono|r
 ## Notes: oUF layout

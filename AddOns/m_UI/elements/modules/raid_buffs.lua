@@ -9,64 +9,64 @@ local foodbuffs = {
 	87548, -- Well Fed
 }
 local flaskbuffs = {
-			105694,	-- Flask of the Earth
-			105691,	-- Flask of the Warm Sun
-			105696,	-- Flask of Winter's Bite
-			105693,	-- Flask of Falling Leaves
-			105689,	-- Flask of Spring Blossoms
+	105694,	-- Flask of the Earth
+	105691,	-- Flask of the Warm Sun
+	105696,	-- Flask of Winter's Bite
+	105693,	-- Flask of Falling Leaves
+	105689,	-- Flask of Spring Blossoms
 }
 
 -- Setup caster buffs
 local function SetCasterOnlyBuffs()
 	buff1list = {	-- Total Stats
-        90363,	-- Embrace of the Shale Spider
-		20217,	-- Blessing of Kings
-		115921, -- Legacy of the Emperor
-		1126,	-- Mark of the Wild
+        -- 90363,	-- Embrace of the Shale Spider
+		-- 20217,	-- Blessing of Kings
+		-- 115921, -- Legacy of the Emperor
+		-- 1126,	-- Mark of the Wild
 	}
 	buff2list = {	-- Total Stamina
-        469, -- Commanding Shout
-        90364, -- Qiraji Fortitude
-		109773, -- Dark Intent
-		21562, -- Power Word: Fortitude	
+        -- 469, -- Commanding Shout
+        -- 90364, -- Qiraji Fortitude
+		-- 109773, -- -- Dark Intent
+		-- 21562, -- Power Word: Fortitude
 	}
 	buff3list = {	-- Spell power
-		77747, -- Burning wrath
-		109773, -- Dark Intent
-		126309, -- Still Water
-		61316, -- Dalaran Brilliance
-		1459,  -- Arcane Brilliance
+		-- 77747, -- Burning wrath
+		-- 109773, -- Dark Intent
+		-- 126309, -- Still Water
+		-- 61316, -- Dalaran Brilliance
+		-- 1459,  -- Arcane Brilliance
 	}
 	buff4list = {	-- Mastery
-		116956, -- grace of air
-		19740,	-- Blessing of Might
-		116781, -- Legacy of the White Tiger
+		-- 116956, -- grace of air
+		-- 19740,	-- Blessing of Might
+		-- 116781, -- Legacy of the White Tiger
 	}
 end
 
 -- Setup everyone else's buffs
 local function SetBuffs()
 	buff1list = {	-- Total Stats
-        90363,	-- Embrace of the Shale Spider
-		20217,	-- Blessing of Kings
-		115921, -- Legacy of the Emperor
-		1126,	-- Mark of the Wild
+        -- 90363,	-- Embrace of the Shale Spider
+		-- 20217,	-- Blessing of Kings
+		-- 115921, -- Legacy of the Emperor
+		-- 1126,	-- Mark of the Wild
 	}
 	buff2list = {	-- Total Stamina
-        469, -- Commanding Shout
-        90364, -- Qiraji Fortitude
-		109773, -- Dark Intent
-		21562, -- Power Word: Fortitude	
+        -- 469, -- Commanding Shout
+        -- 90364, -- Qiraji Fortitude
+		-- 109773, -- Dark Intent
+		-- 21562, -- Power Word: Fortitude
 	}
 	buff3list = {	 -- Total AP
-        19506,	-- Trueshot Aura
-        57330,	-- Horn of Winter
-		6673,	-- Battle Shout
+        -- 19506,	-- Trueshot Aura
+        -- 57330,	-- Horn of Winter
+		-- 6673,	-- Battle Shout
 	}
 	buff4list = {	-- Mastery
-		116956, -- grace of air
-		19740,	-- Blessing of Might
-		116781, -- Legacy of the White Tiger
+		-- 116956, -- grace of air
+		-- 19740,	-- Blessing of Might
+		-- 116781, -- Legacy of the White Tiger
 	}
 end
 
@@ -214,9 +214,9 @@ local function OnAuraChange(self, event, arg1, unit)
 end
 
 local rbf = CreateFrame("Frame", "RaidBuffFrame", UIParent)
-if cfg.modules.raid_buffs.orientation == "VERTICAL" then 
+if cfg.modules.raid_buffs.orientation == "VERTICAL" then
 	rbf:SetWidth(cfg.modules.raid_buffs.size)
-	rbf:SetHeight((cfg.modules.raid_buffs.size + cfg.modules.raid_buffs.spacing)* 6)	
+	rbf:SetHeight((cfg.modules.raid_buffs.size + cfg.modules.raid_buffs.spacing)* 6)
 else
 	rbf:SetWidth((cfg.modules.raid_buffs.size + cfg.modules.raid_buffs.spacing)* 6)
 	rbf:SetHeight(cfg.modules.raid_buffs.size)
@@ -237,7 +237,7 @@ rbf:SetScript("OnEvent", OnAuraChange)
 local function CreateButton(name, relativeTo, firstbutton)
 	local button = CreateFrame("Frame", name, RaidBuffFrame)
 	button:EnableMouse(true)
-	if cfg.modules.raid_buffs.orientation == "VERTICAL" then 
+	if cfg.modules.raid_buffs.orientation == "VERTICAL" then
 		if firstbutton then
 			button:SetSize(cfg.modules.raid_buffs.size,cfg.modules.raid_buffs.size)
 			button:SetPoint("TOP", relativeTo, "TOP", 0, 0)

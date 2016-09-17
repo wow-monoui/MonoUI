@@ -8,7 +8,6 @@ end
 hooksecurefunc("ShowReadyCheck", ShowReadyCheckHook)
 
 -- setting important CVars
-SetCVar("cameraDistanceMax", 50)
 SetCVar("cameraDistanceMaxFactor", 3.4)
 SetCVar("screenshotQuality", cfg.script.screenshot_quality)
 SetCVar("profanityFilter",0)
@@ -60,7 +59,7 @@ f:SetScript("OnEvent", function(self, event)
 	--SetCVar("showAllEnemyDebuffs",1)
 end) ]]
 
---[[ if alDamageMeterFrame then 
+--[[ if alDamageMeterFrame then
 	alDamageMeterFrame:ClearAllPoints()
 	alDamageMeterFrame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -169, 33)
 end ]]
@@ -127,4 +126,3 @@ frame:SetScript("OnEvent", function(self, event, addon)
 		end)
 	end
 end)
-

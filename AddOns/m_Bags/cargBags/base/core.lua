@@ -82,21 +82,21 @@ function cargBags:ReplaceBlizzard(name)
 	self.blizzard = impl
 
  	ToggleBag = toggleNoForce
---	ToggleBackpack = toggleNoForce
---	ToggleAllBags
+    ToggleBackpack = toggleNoForce
+    ToggleAllBags = toggleNoForce
 	OpenBag = openBag -- due to changes in WoW patch 4.1, we need to grab this one as well - Lars Norberg
 	OpenAllBags = toggleBag	-- Name is misleading, Blizz-function actually toggles bags
 	OpenBackpack = openBag -- Blizz does not provide toggling here
 	CloseAllBags = closeBag
-	CloseBackpack = closeBag 
-	
+	CloseBackpack = closeBag
+
 --[[ 	hooksecurefunc("ToggleBag", toggleNoForce)
 	hooksecurefunc("OpenAllBags", toggleBag)
 	hooksecurefunc("OpenBackpack", openBag)
 	hooksecurefunc("OpenBag", openBag)
 	hooksecurefunc("CloseAllBags", closeBag)
 	hooksecurefunc("CloseBackpack", closeBag) ]]
-	
+
 --[[ 	for i = 1, 5 do
 		local bag = _G["ContainerFrame" .. i]
 		bag:Hide()
@@ -116,7 +116,7 @@ function cargBags:RegisterBlizzard(implementation)
 	--else
 		--self:RegisterEvent("PLAYER_LOGIN")
 	--end
-		
+
 end
 
 --- Fires an event for all implementations
@@ -208,4 +208,3 @@ local m_item = {__index = function(i,k) return cargBags.itemKeys[k] and cargBags
 function cargBags:NewItemTable()
 	return setmetatable({}, m_item)
 end
-

@@ -54,7 +54,7 @@
     self.height = cfg.oUF.frames.player.height
     self.mystyle = "player"
     genStyle(self)
-    self.Health.Smooth = true
+    self.Health.Smooth = false
     self.Power.frequentUpdates = true
     self.Power.Smooth = true
     self.Power.colorPower = true
