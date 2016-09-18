@@ -867,7 +867,7 @@
 	wsb:SetSize(f.width*0.7, f.height/3)
 	wsb:SetFrameLevel(10)
 
-	for i = 1, 4 do
+	for i = 1, 5 do
 		wsb[i] = CreateFrame("StatusBar", "WarlockSpecBars"..i, wsb)
 		wsb[i]:SetHeight(wsb:GetHeight()-1)
 		wsb[i]:SetStatusBarTexture(cfg.oUF.media.statusbar)
@@ -911,14 +911,14 @@
 
 	local lb = CreateFrame('StatusBar', nil, eb)
 	lb:SetPoint('LEFT', eb, 'LEFT', 0, 0)
-	lb:SetSize(eb:GetWidth(), eb:GetHeight())
+	lb:SetSize(eb:GetWidth()/2, eb:GetHeight())
 	lb:SetStatusBarTexture(cfg.oUF.media.statusbar)
 	lb:SetStatusBarColor(0.27, 0.47, 0.74)
 	lb:SetFrameLevel(11)
 
 	local sb = CreateFrame('StatusBar', nil, eb)
 	sb:SetPoint('LEFT', lb:GetStatusBarTexture(), 'RIGHT', 0, 0)
-	sb:SetSize(eb:GetWidth(), eb:GetHeight())
+	sb:SetSize(eb:GetWidth()/2, eb:GetHeight())
 	sb:SetStatusBarTexture(cfg.oUF.media.statusbar)
 	sb:SetStatusBarColor(0.87, 0.67, 0.3)
 	sb:SetFrameLevel(11)
@@ -1027,7 +1027,7 @@
 		local es = lib.gen_fontstring(h, cfg.oUF.media.font, 14, "THINOUTLINE")
 		es:SetPoint("CENTER", f.Power, "BOTTOMRIGHT",0,0)
 		if class == "SHAMAN" then
-			f:Tag(es, '[raid:earth]')
+			-- f:Tag(es, '[raid:earth]')
 		elseif class == "DRUID" then
 			f:Tag(es, '[raid:lb]')
 		elseif class == "PRIEST" then
@@ -1040,7 +1040,7 @@
 		if class == "DRUID" then
 			f:Tag(sp, '[mono:wm1][mono:wm2][mono:wm3]')
 		elseif class == "SHAMAN" then
-			f:Tag(sp, '[mono:ws][mono:ls]')
+			f:Tag(sp, '[mono:ls]')
 		end
 	end
   end

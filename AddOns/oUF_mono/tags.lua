@@ -323,18 +323,18 @@ end
 oUF.Tags.Events['mono:cp'] = 'UNIT_COMBO_POINTS'
 -- special powers
 -- water shield
-oUF.Tags.Methods['mono:ws'] = function(u)
-  local name, _, _, count, _, duration = UnitBuff("player",GetSpellInfo(52127))
-  if name then
-    return "|cff8AFF30_|r"
-  end
-end
-oUF.Tags.Events['mono:ws'] = 'UNIT_AURA'
+-- oUF.Tags.Methods['mono:ws'] = function(u)
+--   local name, _, _, count, _, duration = UnitBuff("player",GetSpellInfo(52127))
+--   if name then
+--     return "|cff8AFF30_|r"
+--   end
+-- end
+-- oUF.Tags.Events['mono:ws'] = 'UNIT_AURA'
 -- lightning shield / maelstrom weapon
 oUF.Tags.Methods['mono:ls'] = function(u)
-  local lsn, _, _, lsc = UnitBuff("player",GetSpellInfo(324))
-  local mw, _, _, mwc = UnitBuff("player",GetSpellInfo(53817))
-  if mw and not UnitBuff("player",GetSpellInfo(52127)) then
+  local lsn, _, _, lsc = UnitBuff("player",GetSpellInfo(192106))
+  local mw, _, _, mwc = UnitBuff("player",GetSpellInfo(187880))
+  if mw then
     if mwc == 1 then
       return "|cff8AFF30_|r"
     elseif mwc == 2 then
@@ -351,12 +351,12 @@ oUF.Tags.Methods['mono:ls'] = function(u)
       return ""
     end
 
-    local ils, _, _, ilc = UnitBuff("player",GetSpellInfo(157774))
-    if ils then
-      lsc = math.floor(lsc / 4)
-    else
+    -- -- local ils, _, _, ilc = UnitBuff("player",GetSpellInfo(157774))
+    --if ils then
+    --  lsc = math.floor(lsc / 4)
+    --else
       lsc = math.floor(lsc / 3)
-    end
+    --end
     if lsc == 2 then
       return "|cff8AFF30_ _|r"
     elseif lsc == 3 then
@@ -377,19 +377,19 @@ end
 oUF.Tags.Events['mono:ls'] = 'UNIT_AURA'
 -- earth shield
 --oUF.earthCount = {1,2,3,4,5,6,7,8,9,10}
-oUF.Tags.Methods['raid:earth'] = function(u)
-  local name, _,_, c, _,_,_, source = UnitAura(u, GetSpellInfo(974))
-  if source == "player" then
-    if(c) and name and (c ~= 0) then return '|cff79DB79'..c..'|r' end
-  else
-    if(c) and (c ~= 0) then return '|cffFFCF7F'..c..'|r' end
-  end
-end
-oUF.Tags.Events['raid:earth'] = 'UNIT_AURA'
+-- oUF.Tags.Methods['raid:earth'] = function(u)
+--   local name, _,_, c, _,_,_, source = UnitAura(u, GetSpellInfo(974))
+--   if source == "player" then
+--     if(c) and name and (c ~= 0) then return '|cff79DB79'..c..'|r' end
+--   else
+--     if(c) and (c ~= 0) then return '|cffFFCF7F'..c..'|r' end
+--   end
+-- end
+-- oUF.Tags.Events['raid:earth'] = 'UNIT_AURA'
 -- Prayer of Mending
 --oUF.pomCount = {1,2,3,4,5,6}
 oUF.Tags.Methods['raid:pom'] = function(u)
-  local _, _,_, c, _,_,_, source = UnitAura(u, GetSpellInfo(41635))
+  local _, _,_, c, _,_,_, source = UnitAura(u, GetSpellInfo(33076))
   if source == "player" then
     if(c) and (c ~= 0) then return "|cff79DB79"..c.."|r" end
   else
