@@ -76,7 +76,7 @@ oUF.Tags.Methods['mono:color'] = function(u, r)
   local reaction = UnitReaction(u, "player")
 
   -- if (UnitIsTapped(u) and not UnitIsTappedByPlayer(u)) then
-  if (UnitIsTapDenied(u) and not UnitIsTappedByPlayer(u) and not UnitIsTappedByAllThreatList(u)) then
+  if (UnitIsTapDenied(u)) then
     return hex(oUF.colors.tapped)
   elseif (UnitIsPlayer(u)) then
     return hex(oUF.colors.class[class])

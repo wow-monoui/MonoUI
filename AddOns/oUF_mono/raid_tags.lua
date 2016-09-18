@@ -18,8 +18,6 @@ local L = {
   ["Regrowth"] = GetSpellInfo(8936),
   ["Wild Growth"] = GetSpellInfo(48438),
   ["Mark of the Wild"] = GetSpellInfo(1126), -- bok/legacy
-	--dk
-  ["Horn of Winter"] = GetSpellInfo(57330),
 	--warrior
   ["Battle Shout"] = GetSpellInfo(6673),
   ["Commanding Shout"] = GetSpellInfo(469),
@@ -288,7 +286,6 @@ oUF.classIndicators={
 				["TL"] = "",
 				["TR"] = "",
 				["BL"] = "",
-				["BR"] = "[raid:how]",
 				["Cen"] = "",
 		},
 		["SHAMAN"] = {
