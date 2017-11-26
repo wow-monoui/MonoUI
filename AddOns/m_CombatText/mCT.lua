@@ -11,8 +11,8 @@ end
 --[[ -- Making sure that combat text is enabled
 local d=CreateFrame"Frame"
 d:RegisterEvent("VARIABLES_LOADED")
-d:SetScript("OnEvent", function() 
-	SetCVar("enableCombatText", 1, true) 
+d:SetScript("OnEvent", function()
+	SetCVar("enableCombatText", 1, true)
 end) ]]
 
 -- Enabling Blizzard_CombatText add-on and hiding default floating combat text frames
@@ -20,6 +20,8 @@ LoadAddOn("Blizzard_CombatText")
 CombatText:SetScript("OnUpdate", nil)
 CombatText:SetScript("OnEvent", nil)
 CombatText:UnregisterAllEvents()
+SetCVar("floatingCombatTextCombatHealing",0)
+SetCVar("floatingCombatTextCombatDamage",0)
 
 -- Set specific threshold for max level players
 if UnitLevel("player") == MAX_PLAYER_LEVEL then
@@ -117,7 +119,7 @@ if cfg.combattext.show_damage then
  			)
 	local mCTd=CreateFrame"Frame"
 	mCTd:RegisterEvent"COMBAT_LOG_EVENT_UNFILTERED"
-	mCTd:SetScript("OnEvent",function(self,event,...) 
+	mCTd:SetScript("OnEvent",function(self,event,...)
 		local msg,icon
 		local timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = select(1,...)
 		if(sourceGUID==UnitGUID"player" and destGUID~=UnitGUID"player")or(sourceGUID==UnitGUID"pet")or(sourceFlags==gflags)then
@@ -200,14 +202,14 @@ if cfg.combattext.show_damage then
 					end
 					missType=missType.." \124T"..icon..":"..cfg.combattext.iconsize..":"..cfg.combattext.iconsize..":0:0:64:64:5:59:5:59\124t"
 				end
-	
+
 				mCT3:AddMessage(missType)
 			elseif(eventType=="SPELL_MISSED")or(eventType=="RANGE_MISSED")then
 				local spellId,_,_,missType,_ = select(12,...)
 				if(cfg.combattext.show_icons)then
 					icon=GetSpellTexture(spellId)
 					missType=missType.." \124T"..icon..":"..cfg.combattext.iconsize..":"..cfg.combattext.iconsize..":0:0:64:64:5:59:5:59\124t"
-				end 
+				end
 				mCT3:AddMessage(missType)
 			elseif(eventType=="SPELL_DISPEL") then
 				--[[	spellId,spellName,spellSchool
@@ -249,7 +251,7 @@ if cfg.combattext.show_damage then
 			elseif(eventType=="PARTY_KILL") then
 				local tname=select(9,...)
 				mCT3:AddMessage(ACTION_PARTY_KILL..": "..tname, .2, 1, .2)
-			end	
+			end
 		end
 	end)
 end
@@ -268,18 +270,18 @@ if cfg.combattext.show_healing then
 					local color={.1,1,.1}
 					local rawamount=amount
 					if cfg.combattext.show_overhealing and abs(overhealing) > 0 then amount = math.floor(amount-overhealing).." ("..floor(overhealing)..")" end
-					if (critical) then 
+					if (critical) then
 						amount="|cffFF0000*|r"..amount.."|cffFF0000*|r"
 						color={.1,1,.1}
 					else
 						color={.1,.65,.1}
-					end 
+					end
 					if(cfg.combattext.show_icons)then
 						icon=GetSpellTexture(spellId)
 					else
 						msg=""
 					end
-              			if (icon) then 
+              			if (icon) then
                			msg=" \124T"..icon..":"..cfg.combattext.iconsize..":"..cfg.combattext.iconsize..":0:0:64:64:5:59:5:59\124t"
 					elseif(cfg.combattext.show_icons)then
 						msg=" \124T"..cfg.blank..":"..cfg.combattext.iconsize..":"..cfg.combattext.iconsize..":0:0:64:64:5:59:5:59\124t"

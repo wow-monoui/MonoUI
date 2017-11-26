@@ -56,11 +56,14 @@ end
 local function getbarpos(timer, time)
     local duration = timer.endTime - (timer._startTimeModified or timer.startTime)
     if duration == 0 then return 0 end
+    local progress
     if time >= 0 then
-        return time / duration * timer.bar:GetWidth(), time / duration
+        progress = time / duration
     else
-        return (duration+time) / duration * timer.bar:GetWidth(), (duration+time) / duration
+        progress = (duration+time) / duration
     end
+    if progress > 1 then progress = 1 end
+    return progress * timer.bar:GetWidth(), progress
 end
 
 function TimerBar.MoveMark(self, time)
@@ -91,6 +94,12 @@ local function clear_overlay_point(p, self, ticktime)
 end
 
 function TimerBar.UpdateMark(self, time) -- time - usually closest tick time
+    if self.timeless then
+        self.overlay2:Hide()
+        self.mark:Hide()
+        self.mark.texture:Hide()
+        return
+    end
     if self.tickPeriod then
         if time then
             if time > 0 then
@@ -117,8 +126,17 @@ function TimerBar.UpdateMark(self, time) -- time - usually closest tick time
 
     local overlay2 = self.opts.overlay
     if overlay2 then
+
         local t1 = clear_overlay_point(overlay2[1], self, time)
         local t2 = clear_overlay_point(overlay2[2], self, time)
+
+        local hastereduced = overlay2[4]
+        if hastereduced then
+            local duration = t2 - t1
+            duration = (duration/(1+(UnitSpellHaste("player")/100)))
+            t2 = t1 + duration
+        end
+
         if not t1 or not t2 then
             return -- skip when point contains "tick" or "tickend", but it's not tick update call
         end
@@ -150,10 +168,11 @@ end
 
 function TimerBar.ToInfinite(self)
     self.bar:SetMinMaxValues(0,100)
-    self.bar:SetValue(0)
+    self.bar:SetValue(100)
     self.startTime = GetTime()
     self.endTime = self.startTime + 1
     self.timeText:SetText("")
+    self:UpdateMark()
 end
 
 function TimerBar.ToGhost(self)
@@ -195,6 +214,7 @@ function TimerBar.Resize1(self, width, height)
     self:SetWidth(width)
     self:SetHeight(height)
     self.mark:SetHeight(height*0.9)
+    self.mark.spark:SetHeight(height*2.6)
     self.bar:SetWidth(width - self._height - 1)
     self.bar:SetHeight(height)
     self.spellText:SetWidth(self.bar:GetWidth()*0.8)
@@ -207,7 +227,7 @@ end
 
 function TimerBar.VScale(self, scale)
     if scale == self._scale then return end
-    if scale > 1 then scale = 1 end
+    if scale > 2 then scale = 2 end
     -- if not self._scale and scale == 1 then return end -- already at full size
 
     self._scale = scale
@@ -215,8 +235,14 @@ function TimerBar.VScale(self, scale)
     local width = self._width
     self:Resize1(width, height)
 
-    local x = 0.8 * (1-scale) * 0.5
-    self.icon:SetTexCoord(.1, .9, .1+x, .9-x)
+    if scale <= 1 then
+        local x = 0.8 * (1-scale) * 0.5 -- half of the texcoord height * scale difference
+        self.icon:SetTexCoord(.1, .9, .1+x, .9-x)
+    elseif scale <=2 then
+        local x = self._height/height * 0.4
+        self.icon:SetTexCoord(.5-x, .5+x, .1, .9)
+    end
+
     self.icon:GetParent():SetHeight(height)
     self.shine:GetParent():SetHeight(height*1.8)
     self.shine:Stop()
@@ -496,12 +522,16 @@ NugRunning.ConstructTimerBar = function(width, height)
     pmf.oz = 0
 
     pmf.SetEffect = function(self, effect)
+        if type(effect) == "string" then
+            effect = NugRunningConfig.effects[effect]
+        end
         self.model_path = effect.path
         local scale = effect.scale or 1
         self:SetSize(height*scale, height*scale)
         local x = effect.x or 0
         local y = effect.y or 0
         pmf:SetPoint("CENTER", ic, "LEFT", x, y)
+        self:Hide()
     end
 
     pmf:SetScript("OnHide", ResetTransformations)
@@ -550,7 +580,7 @@ NugRunning.ConstructTimerBar = function(width, height)
 
     f.animIn = aag
 
-    local m = CreateFrame("Frame",nil,self)
+    local m = CreateFrame("Frame",nil, f)
     m:SetParent(f)
     m:SetWidth(1)
     m:SetHeight(f:GetHeight()*0.9)

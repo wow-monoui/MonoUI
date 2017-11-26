@@ -1,14 +1,10 @@
-## Interface: 70000
+## Interface: 70300
 ## Title: NugRunning
 ## Notes: Spelltimers
 ## Author: d87
 ## SavedVariablesPerCharacter: NRunDB_Char
-## SavedVariables: NRunDB_Global
-## Version: 7.0.9
-## X-Curse-Packaged-Version: 7.0.9
-## X-Curse-Project-Name: NugRunning
-## X-Curse-Project-ID: nugrunning
-## X-Curse-Repository-ID: wow/nugrunning/mainline
+## SavedVariables: NRunDB_Global, NugRunningConfigCustom
+## Version: 7.3.3c
 helpers.lua
 config.lua
 NugRunning.lua
@@ -18,4 +14,3 @@ totems.lua
 nameplates.lua
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
-Libs\LibScouter-1.0\LibScouter-1.0.lua

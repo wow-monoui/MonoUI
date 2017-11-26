@@ -4,13 +4,13 @@ local cast = CreateFrame("Frame")
   -- special thanks to Allez for coming up with this solution
 local channelingTicks = {
 	-- warlock
-	[GetSpellInfo(689)] = 3, -- "Drain Life"
+	[GetSpellInfo(234153)] = 3, -- "Drain Life"
 	[GetSpellInfo(5740)] = 4, -- "Rain of Fire"
 	-- druid
 	[GetSpellInfo(740)] = 4, -- "Tranquility"
 	-- priest
 	[GetSpellInfo(15407)] = 3, -- "Mind Flay"
-	[GetSpellInfo(48045)] = 5, -- "Mind Sear"
+	[GetSpellInfo(234702)] = 5, -- "Mind Sear"
 	[GetSpellInfo(47540)] = 2, -- "Penance"
 	-- mage
 	[GetSpellInfo(5143)] = 5, -- "Arcane Missiles"
