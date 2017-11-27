@@ -17,15 +17,21 @@ local eb_width = cfg.modules.chat.editbox_width						-- Editbox width
 local tscol = cfg.modules.chat.timestamps_color						-- Timestamp coloring
 local TimeStampsCopy = cfg.modules.chat.timestamps_copy					-- Enables special time stamps in chat allowing you to copy the specific line from your chat window by clicking the stamp
 local TimeStampsFormat = cfg.modules.chat.timestamps_format			-- time stamps format
-local LinkHover = {}; LinkHover.show = {	-- enable (true) or disable (false) LinkHover functionality for different things in chat
-	["achievement"] = true,
-	["enchant"]     = true,
-	["glyph"]       = true,
-	["item"]        = true,
-	["quest"]       = true,
-	["spell"]       = true,
-	["talent"]      = true,
-	["unit"]        = true,}
+local LinkHover = {};
+LinkHover.show = {
+	achievement    = GameTooltip,
+	battlepet      = BattlePetTooltip,
+	battlePetAbil  = SharedPetBattleAbilityTooltip,
+	currency       = GameTooltip,
+	enchant        = GameTooltip,
+	glyph          = GameTooltip,
+	item           = GameTooltip,
+	instancelock   = GameTooltip,
+	quest          = GameTooltip,
+	spell          = GameTooltip,
+	talent         = GameTooltip,
+	unit           = GameTooltip,
+}
 
 local gsub = gsub
 
@@ -315,19 +321,43 @@ hooksecurefunc("ChatEdit_SendText",eb_mouseoff)
 
 ---------------- > Show tooltips when hovering a link in chat (credits to Adys for his LinkHover)
 if cfg.modules.chat.link_hover_tooltips then
+local function tonumber_all(v, ...)
+	if select('#', ...) == 0 then
+		return tonumber(v)
+	else
+		return tonumber(v), tonumber_all(...)
+	end
+end
 function LinkHover.OnHyperlinkEnter(_this, linkData, link)
-	local t = linkData:match("^(.-):")
-	if LinkHover.show[t] and IsAltKeyDown() then
-		ShowUIPanel(GameTooltip)
-		GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-		GameTooltip:SetHyperlink(link)
-		GameTooltip:Show()
+	-- Some links are buggy. (eg. Omnitron warnings in BWD)
+	if not link or link == "" then return end
+	local tt = LinkHover.show[linkData:match("^(.-):")]
+	if tt then
+		if tt == BattlePetTooltip then
+			local x, y = GetCursorPosition()
+			local scale = UIParent:GetEffectiveScale()
+			x = x / scale
+			y = y / scale
+			GameTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+			GameTooltip:SetPoint(
+				"BOTTOMLEFT", UIParent, "BOTTOMLEFT", x - GameTooltip:GetWidth() / 2, y
+			)
+			BattlePetToolTip_Show(tonumber_all(select(2, strsplit(":", linkData))))
+		elseif tt == SharedPetBattleAbilityTooltip then
+			-- TODO: Get someone fired
+		else
+			ShowUIPanel(tt)
+			tt:SetOwner(UIParent, "ANCHOR_CURSOR")
+			tt:SetHyperlink(link)
+			tt:Show()
+		end
 	end
 end
 function LinkHover.OnHyperlinkLeave(_this, linkData, link)
-	local t = linkData:match("^(.-):")
-	if LinkHover.show[t] then
-		HideUIPanel(GameTooltip)
+	-- local tt = LinkHover.show[linkData:match("^(.-):")]
+	if linkData then
+	else
+		GameTooltip:Hide()
 	end
 end
 local function LinkHoverOnLoad()

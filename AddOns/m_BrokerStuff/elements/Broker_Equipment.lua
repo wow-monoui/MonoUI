@@ -27,10 +27,12 @@ end
 
 local f=CreateFrame("frame")
 f:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-f:SetScript("OnEvent",function() 
-	--PickupInventoryItem(17) 
-	--PutItemInBackpack() 
-	UseEquipmentSet(Broker_EquipmentDB.spec["spec"..GetActiveSpecGroup()]) 
+f:SetScript("OnEvent",function()
+	--PickupInventoryItem(17)
+	--PutItemInBackpack()
+	if Broker_EquipmentDB.spec["spec"..GetActiveSpecGroup()] and Broker_EquipmentDB.spec["spec"..GetActiveSpecGroup()] ~= "" then
+		local setWasEquiped = C_EquipmentSet.UseEquipmentSet(Broker_EquipmentDB.spec["spec"..GetActiveSpecGroup()])
+	end
 end)
 StaticPopupDialogs["CONFIRM_APPOINT_SET"] = {
   text = "Do you want to use this set for your current spec?",
@@ -133,7 +135,7 @@ function addon:ADDON_LOADED(event, name)
 	Broker_EquipmentDB = Broker_EquipmentDB or {text = 'No set', icon = [=[Interface\PaperDollInfoFrame\UI-EquipmentManager-Toggle]=]}
 
 	if not Broker_EquipmentDB.spec then Broker_EquipmentDB.spec = {spec1="", spec2=""} end
-	
+
 	self.info = {}
 	self.displayMode = 'MENU'
 
