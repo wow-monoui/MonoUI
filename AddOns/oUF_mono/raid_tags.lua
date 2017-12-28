@@ -48,6 +48,8 @@ local L = {
 	--mage
   ["Dalaran Brilliance"] = GetSpellInfo(61316),
   ["Arcane Brilliance"] = GetSpellInfo(1459),
+  --demon hunter
+  ["Soul Fragments"] = GetSpellInfo(203981),
 }
 local x = "M"
 
@@ -169,6 +171,10 @@ oUF.Tags.Events['raid:SW'] = "UNIT_AURA"
 --rogue
 oUF.Tags.Methods['raid:tricks'] = function(u) if UnitAura(u, L["Tricks of the Trade"]) then return "|cff33FF33"..x.."|r" end end
 oUF.Tags.Events['raid:tricks'] = "UNIT_AURA"
+
+--demon hunter
+oUF.Tags.Methods['raid:sf'] = function(u) if UnitAura(u, L["Soul Fragments"]) then return "|cff33FF33"..x.."|r" end end
+oUF.Tags.Events['raid:sf'] = "UNIT_AURA"
 
 --paladin
 oUF.Tags.Events['raid:beaconTime'] = "UNIT_AURA"
@@ -322,5 +328,12 @@ oUF.classIndicators={
 				["BL"] = "[raid:lc]",
 				["BR"] = "[raid:motw]",
 				["Cen"] = "[raid:rmTime]",
-		}
+		},
+    ["DEMONHUNTER"] = {
+        ["TL"] = "",
+        ["TR"] = "",
+        ["BL"] = "",
+        ["BR"] = "",
+        ["Cen"] = "",
+    },
 }

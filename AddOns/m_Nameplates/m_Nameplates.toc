@@ -1,0 +1,10 @@
+## Interface: 70300
+## Author: Monolit
+## Title: mono|cffffffffNameplates|r
+## Version: 5.0
+## Notes: simple nameplate addon
+## Credits: Dawn, Caellian, shUI
+
+cfg.lua
+..\!mCFG\mCFG_layer.lua
+Nameplates.lua

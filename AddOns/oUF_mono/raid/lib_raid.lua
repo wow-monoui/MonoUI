@@ -312,7 +312,7 @@
 		local mhpb = heal_bar(f, .4, .8, 0, .5)
 		local ohpb = heal_bar(f, 0, .4, 0, .5)
 		local ahpb = heal_bar(f, .2, 1, 1, .7)
-		f.HealPrediction = { myBar = mhpb, otherBar = ohpb, absorbBar = ahpb, maxOverflow = cfg.oUF.frames.raid.healbar.healoverflow }
+		f.HealthPrediction = { myBar = mhpb, otherBar = ohpb, absorbBar = ahpb, maxOverflow = cfg.oUF.frames.raid.healbar.healoverflow }
 	end
 
 	-- Health bar

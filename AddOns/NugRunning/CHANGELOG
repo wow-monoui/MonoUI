@@ -1,10 +1,15 @@
+### 7.3.5
+
+- __set__ and __setpos__ commands fixed
+
+### 7.3.4
+
+- Item cooldowns support
+
 ### 7.3.3c
 
-- Mind Flay is now a cast timer
-
-### 7.3.3b
-
 - Possible nameplate settings confict fix
+- Mind Flay is now a cast timer
 
 ### 7.3.3
 

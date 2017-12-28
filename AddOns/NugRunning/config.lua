@@ -9,6 +9,7 @@ local Cooldown = helpers.Cooldown
 local Activation = helpers.Activation
 local EventTimer = helpers.EventTimer
 local Cast = helpers.Cast
+local Item = helpers.Item
 local Anchor = helpers.Anchor
 local Talent = helpers.Talent
 local Glyph = helpers.Glyph
@@ -794,6 +795,9 @@ Spell( {221562, 108194} ,{ name = "Asphyxiate", color = colors.PINK, duration = 
 end
 
 if class == "MAGE" then
+    
+-- Item( 153130 ,{ name = "Man'Ari", color = colors.DTEAL, ghost = true })
+
 Cooldown( 214634 ,{ name = "Ebonbolt", color = colors.DTEAL, scale_until = 10, ghost = true })
 Cooldown( 194466 ,{ name = "Phoenix's Flames", color = colors.DTEAL, scale = 0.5, priority = -1, ghost = true })
 Cooldown( 224968 ,{ name = "Mark of Aluneth", color = colors.DTEAL, scale_until = 10, ghost = true })

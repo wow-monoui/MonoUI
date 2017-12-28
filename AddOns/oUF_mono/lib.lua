@@ -813,6 +813,17 @@
       end
   end
 
+  -- Soul Fragments bar
+  lib.gen_SoulFragments = function(f)
+    if class ~= "DEMONHUNTER" then return end
+    local h = CreateFrame("Frame", nil, f)
+    h:SetAllPoints(f.Health)
+    h:SetFrameLevel(10)
+    local cp = lib.gen_fontstring(h, cfg.oUF.media.font, 30, "THINOUTLINE")
+    cp:SetPoint("CENTER", f.Health, "CENTER",0,3)
+    f:Tag(cp, '[mono:sf]')
+  end
+
   -- gen ClassIcons (priests, monks, paladins)
   -- need to update the bar width depending on current max value of class specific power
   local PostUpdateClassPowerIcons = function(element, power, maxPower, maxPowerChanged, event)
@@ -1263,8 +1274,8 @@
 	apb.v:SetPoint("CENTER", apb, "CENTER", 0, 0)
 	f:Tag(apb.v, '[mono:altpower]')
 
-	f.AltPowerBar = apb
-	f.AltPowerBar.PostUpdate = AltPowerPostUpdate
+	f.AlternativePower = apb
+	f.AlternativePower.PostUpdate = AltPowerPostUpdate
   end
   --hand the lib to the namespace for further usage
   ns.lib = lib
