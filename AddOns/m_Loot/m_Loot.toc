@@ -1,0 +1,11 @@
+﻿## Interface: 80300
+## Title: mono|cffffffffLoot|r
+## Author: Monolit
+## Author: Kaitsuburi
+## Version: 8.2.0
+## Notes: Reworked Butsu + teksLoot compilation, so credits to the original authors
+
+cfg.lua
+..\!mCFG\mCFG_layer.lua
+m_Loot.lua
+m_LootGroup.lua

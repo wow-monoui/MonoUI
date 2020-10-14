@@ -1,0 +1,3 @@
+﻿local addon, ns = ...
+local cfg = ns.cfg
+local A = ns.A

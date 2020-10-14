@@ -1,0 +1,12 @@
+## Interface: 80300
+## Notes: Scrolling combat text
+## Title: mono|cffffffffCombatText|r
+## Author: Monolit
+## Author: Kaitsuburi
+## Version: 8.2.0
+## Credits: Affli, Alza
+
+cfg.lua
+..\!mCFG\mCFG_layer.lua
+aoe_spells.lua
+mCT.lua

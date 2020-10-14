@@ -1,0 +1,65 @@
+## Interface: 80300
+## Notes: Compilation of essential UI elements.
+## Title: mono|cffffffffUIelements|r
+## Author: Monolit
+## Version: 5.1.3
+## OptionalDeps: !mCFG, DBM-Core, NugRunning, Bigwigs, oUF_mono, Skada
+
+cfg.lua
+..\!mCFG\mCFG_layer.lua
+API\functions.lua
+
+elements\modules\noTaint.lua
+elements\modules\font.lua
+
+elements\panels\panels.lua
+elements\panels\layout.lua
+
+elements\Scripts.lua
+elements\BossStuff.lua
+
+elements\skins\StyleDBM.lua
+elements\skins\StyleBW.lua
+elements\skins\StyleNRun.lua
+elements\skins\StyleBlizTimer.lua
+elements\skins\StyleSkada.lua
+
+elements\automation\Mountz.lua
+elements\automation\shoutCD.lua
+elements\automation\MailGet.lua
+elements\automation\AutoLog.lua
+elements\automation\AchiScreenshot.lua
+elements\automation\pullCountdown.lua
+elements\automation\shoutDrink.lua
+elements\automation\shoutInterrupt.lua
+elements\automation\AutoRepair&Sell.lua
+
+elements\automation\Invite.lua
+elements\automation\BuyStack.lua
+elements\automation\Loot.lua
+
+elements\chat\chat.lua
+elements\chat\armory_link.lua
+elements\chat\meters_reports.lua
+
+elements\modules\alert_frames.lua
+elements\modules\buff_frame.lua
+elements\modules\cooldown_count.lua
+elements\modules\durability.lua
+elements\modules\error_frame.lua
+elements\modules\minimap.lua
+elements\modules\quest.lua
+elements\modules\raid_buffs.lua
+elements\modules\raid_cd.lua
+elements\modules\raid_mark.lua
+elements\modules\score_frame.lua
+elements\modules\slash_cmd.lua
+elements\modules\threat_meter.lua
+elements\modules\timer_LFG.lua
+elements\modules\toggle_cloak_helm.lua
+elements\modules\tooltip.lua
+elements\modules\tooltip_spellID.lua
+elements\modules\xp_bar.lua
+elements\modules\azpower_bar.lua
+
+elements\test\test.lua

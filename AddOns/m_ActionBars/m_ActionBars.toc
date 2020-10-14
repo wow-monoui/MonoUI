@@ -1,0 +1,22 @@
+## Interface: 80300
+## Title: mono|cffffffffActionBars|r
+## Author: Monolit
+## Author: Kaitsuburi
+## Notes: Action bar styling
+## Version:  8.2.0
+## Credits: Zork, Allez, Iceblink, Tuller, Tukz, Nightcracker
+## OptionalDeps: !mCFG
+
+## External deps
+embeds.xml
+
+## Deps
+cfg.lua
+..\!mCFG\mCFG_layer.lua
+elements\ActionBarsLib.lua
+core.lua
+##ActionBars.lua
+elements\RaidMark.lua
+elements\ButtonsStyler.lua
+elements\HoverBind.lua
+elements\RangeCheck.lua
