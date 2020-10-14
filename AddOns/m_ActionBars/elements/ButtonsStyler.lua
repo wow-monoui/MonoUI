@@ -41,7 +41,7 @@ local function SetTextures(self, checked)
 end
 
 local function CreateBG(bu)
-	bu.bg = CreateFrame("Frame", nil, bu)
+	bu.bg = CreateFrame("Frame", nil, bu, BackdropTemplateMixin and "BackdropTemplate")
 	bu.bg:SetAllPoints(bu)
 	bu.bg:SetPoint("TOPLEFT", bu, "TOPLEFT", -1, 1)
 	bu.bg:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 1, -1)
@@ -270,15 +270,15 @@ end
 ---------------------------------------------------
 -- Hooks
 ---------------------------------------------------
-hooksecurefunc("ActionButton_Update", ActionButtons)
-if not IsAddOnLoaded("Dominos") then hooksecurefunc("ActionButton_UpdateHotkeys", updatehotkey) end
+hooksecurefunc(ActionBarActionButtonMixin, "Update", ActionButtons)
+if not IsAddOnLoaded("Dominos") then hooksecurefunc(ActionBarActionButtonMixin, "UpdateHotkeys", updatehotkey) end
 --hooksecurefunc("ActionButton_Update", VehicleButtons)
 hooksecurefunc("PetActionBar_Update", PetActionButtons)
 
 hooksecurefunc("PossessBar_Update", PossessButtons)
 hooksecurefunc("StanceBar_UpdateState", StanceButtons)
 
-hooksecurefunc("ActionButton_ShowGrid", ActionButtons_fixgrid)
+hooksecurefunc(ActionBarActionButtonMixin, "Update", ActionButtons_fixgrid)
 --hooksecurefunc("ActionButton_OnEvent", ActionButtons_fixgrid)
 
 SpellFlyout:HookScript("OnShow", SetupFlyoutButton)

@@ -343,17 +343,17 @@ oUF:Factory(function(self)
         --	Arena preparation
         local arenaprep = {}
         for i = 1, 5 do
-            arenaprep[i] = CreateFrame("Frame", "oUF_ArenaPrep" .. i, UIParent)
+            arenaprep[i] = CreateFrame("Frame", "oUF_ArenaPrep" .. i, UIParent, BackdropTemplateMixin and "BackdropTemplate")
             arenaprep[i]:SetAllPoints(_G["oUF_Arena" .. i])
             arenaprep[i]:SetFrameStrata("BACKGROUND")
             arenaprep[i]:SetFrameLevel(5)
-            --lib.gen_backdrop(arenaprep[i])-- +backdrop
+            lib.gen_backdrop(arenaprep[i]) -- +backdrop
 
             arenaprep[i].Health = CreateFrame("StatusBar", nil, arenaprep[i])
             arenaprep[i].Health:SetAllPoints()
             arenaprep[i].Health:SetStatusBarTexture(cfg.oUF.media.statusbar)
 
-            local h = CreateFrame("Frame", nil, arenaprep[i].Health)
+            local h = CreateFrame("Frame", nil, arenaprep[i].Health, BackdropTemplateMixin and "BackdropTemplate")
             h:SetFrameLevel(0)
             h:SetPoint("TOPLEFT", -4, 4)
             h:SetPoint("BOTTOMRIGHT", 4, -4)
@@ -367,7 +367,7 @@ oUF:Factory(function(self)
             arenaprep[i].Power:SetPoint("TOPLEFT", arenaprep[i].Health, "BOTTOMLEFT", 0, -2)
             arenaprep[i].Power:SetStatusBarTexture(cfg.oUF.media.statusbar)
 
-            local h2 = CreateFrame("Frame", nil, arenaprep[i].Power)
+            local h2 = CreateFrame("Frame", nil, arenaprep[i].Power, BackdropTemplateMixin and "BackdropTemplate")
             h2:SetFrameLevel(0)
             h2:SetPoint("TOPLEFT", -3.5, 5)
             h2:SetPoint("BOTTOMRIGHT", 3.5, -5)

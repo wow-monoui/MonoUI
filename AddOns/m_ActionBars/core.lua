@@ -68,32 +68,32 @@ function m_ActionBars:HideBlizzard()
 
     -- Hide MultiBar Buttons, but keep the bars alive
     local btn
-    local reason = ACTION_BUTTON_SHOW_GRID_REASON_EVENT
+    local reason = ACTION_BUTTON_SHOW_GRID_REASON_CVAR
     for i = 1, NUM_ACTIONBAR_BUTTONS do
         btn = _G[format("ActionButton%d", i)]
         btn:SetAttribute("showgrid", 1)
         btn:SetAttribute("statehidden", nil)
-        ActionButton_ShowGrid(btn, reason)
+        btn:ShowGrid(reason)
 
         btn = _G[format("MultiBarRightButton%d", i)]
         btn:SetAttribute("showgrid", 1)
         btn:SetAttribute("statehidden", nil)
-        ActionButton_ShowGrid(btn, reason)
+        btn:ShowGrid(reason)
 
         btn = _G[format("MultiBarBottomRightButton%d", i)]
         btn:SetAttribute("showgrid", 1)
         btn:SetAttribute("statehidden", nil)
-        ActionButton_ShowGrid(btn, reason)
+        btn:ShowGrid(reason)
 
         btn = _G[format("MultiBarLeftButton%d", i)]
         btn:SetAttribute("showgrid", 1)
         btn:SetAttribute("statehidden", nil)
-        ActionButton_ShowGrid(btn, reason)
+        btn:ShowGrid(reason)
 
         btn = _G[format("MultiBarBottomLeftButton%d", i)]
         btn:SetAttribute("showgrid", 1)
         btn:SetAttribute("statehidden", nil)
-        ActionButton_ShowGrid(btn, reason)
+        btn:ShowGrid(reason)
     end
 
     UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
@@ -533,7 +533,7 @@ function m_ActionBars:Enable()
         }
         local ShowHolder = function(holder, switch)
             if not _G[holder:GetName() .. "_overlay"] then
-                local f = CreateFrame("Frame", holder:GetName() .. "_overlay")
+                local f = CreateFrame("Frame", holder:GetName() .. "_overlay", BackdropTemplateMixin and "BackdropTemplate")
                 f:SetAllPoints(holder)
                 f:SetBackdrop(backdrop_tab);
                 f:SetBackdropColor(.1, .1, .2, .8)

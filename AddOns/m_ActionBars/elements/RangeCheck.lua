@@ -152,9 +152,9 @@ function tullaRange:PLAYER_LOGIN()
 	end)
 	
 	self.buttonsToUpdate = {}
-	hooksecurefunc('ActionButton_OnUpdate', self.RegisterButton)
-	hooksecurefunc('ActionButton_UpdateUsable', self.OnUpdateButtonUsable)
-	hooksecurefunc('ActionButton_Update', self.OnButtonUpdate)
+	hooksecurefunc(ActionBarActionButtonMixin, "OnUpdate", self.RegisterButton)
+	hooksecurefunc(ActionBarActionButtonMixin, "UpdateUsable", self.OnUpdateButtonUsable)
+	hooksecurefunc(ActionBarActionButtonMixin, "Update", self.OnButtonUpdate)
 end
 
 function tullaRange:PLAYER_LOGOUT()
