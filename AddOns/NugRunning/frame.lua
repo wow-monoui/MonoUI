@@ -481,7 +481,7 @@ function TimerBar.EnableSpark(self, isEnabled)
 end
 
 NugRunning.ConstructTimerBar = function(width, height)
-    local f = CreateFrame("Frame",nil,UIParent)
+    local f = CreateFrame("Frame",nil,UIParent, BackdropTemplateMixin and "BackdropTemplate")
     Mixin(f, TimerBar)
 
     f:SetWidth(width)

@@ -258,7 +258,7 @@ InterfaceOptions_AddCategory(frame)
 -------------------------------------------------------------------------------
 
 local def_col, def_bg_col = _G.TOOLTIP_DEFAULT_COLOR, _G.TOOLTIP_DEFAULT_BACKGROUND_COLOR
-local Volumizer = CreateFrame("Frame", "VolumizerPanel", UIParent)
+local Volumizer = CreateFrame("Frame", "VolumizerPanel", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 Volumizer:SetScript("OnEvent", function(self, event, ...) if self[event] then return self[event] (self, event, ...) end end)
 Volumizer:RegisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -422,7 +422,7 @@ do
 		check:SetScript("OnEnter", ShowTooltip)
 		check:SetScript("OnLeave", HideTooltip)
 
-		local slider = CreateFrame("Slider", nil, container)
+		local slider = CreateFrame("Slider", nil, container, BackdropTemplateMixin and "BackdropTemplate")
 		slider:SetPoint("LEFT", check, "RIGHT", 0, 0)
 		slider:SetPoint("RIGHT")
 		slider:SetHeight(15)

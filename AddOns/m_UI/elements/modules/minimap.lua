@@ -33,19 +33,20 @@ hint:SetScript("OnEvent", function()
     hint:SetScript("OnUpdate", SetTextureTrick)
 end)
 
--- Background
-Minimap:SetBackdrop({bgFile = "Interface\\ChatFrame\\ChatFrameBackground", insets = {
-    top = -BGThickness,
-    left = -BGThickness,
-    bottom = -BGThickness,
-    right = -BGThickness
-}})
+-- Background 
+-- TODO: This is broken. Probably needs to be wrapped in a special frame or alike.
+-- Minimap:SetBackdrop({bgFile = "Interface\\ChatFrame\\ChatFrameBackground", insets = {
+--     top = -BGThickness,
+--     left = -BGThickness,
+--     bottom = -BGThickness,
+--     right = -BGThickness
+-- }})
 if(ClassColorBorder==true) then
     local _, class = UnitClass("player")
     local t = RAID_CLASS_COLORS[class]
-    Minimap:SetBackdropColor(t.r, t.g, t.b, a)
+    -- Minimap:SetBackdropColor(t.r, t.g, t.b, a)
 else
-    Minimap:SetBackdropColor(r, g, b, a)
+    -- Minimap:SetBackdropColor(r, g, b, a)
 end
 
 -- Mousewheel zoom

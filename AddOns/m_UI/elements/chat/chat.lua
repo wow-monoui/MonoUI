@@ -409,7 +409,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_DND", function(msg) return true end)
 local lines = {}
 do
 	--Create Frames/Objects
-	local frame = CreateFrame("Frame", "BCMCopyFrame", UIParent)
+	local frame = CreateFrame("Frame", "BCMCopyFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 --[[ 	frame:SetBackdrop({bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
 		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
 		tile = true, tileSize = 16, edgeSize = 16,

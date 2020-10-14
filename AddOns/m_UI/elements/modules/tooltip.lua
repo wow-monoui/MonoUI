@@ -84,7 +84,7 @@ end
 local pettooltips = {PetBattlePrimaryAbilityTooltip, PetBattlePrimaryUnitTooltip, FloatingBattlePetTooltip, BattlePetTooltip}
 for _, v in pairs(pettooltips) do
 	v:DisableDrawLayer("BACKGROUND")
-	local bg = CreateFrame("Frame", nil, v)
+	local bg = CreateFrame("Frame", nil, v, BackdropTemplateMixin and "BackdropTemplate")
 	bg:SetAllPoints(v)
 	bg:SetFrameLevel(0)
 	
@@ -201,7 +201,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 	end
 end)
 
-GameTooltipStatusBar.bg = CreateFrame("Frame", nil, GameTooltipStatusBar)
+GameTooltipStatusBar.bg = CreateFrame("Frame", nil, GameTooltipStatusBar, BackdropTemplateMixin and "BackdropTemplate")
 GameTooltipStatusBar.bg:SetPoint("TOPLEFT", GameTooltipStatusBar, "TOPLEFT", -1, 1)
 GameTooltipStatusBar.bg:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar, "BOTTOMRIGHT", 1, -1)
 GameTooltipStatusBar.bg:SetFrameStrata("LOW")
@@ -239,7 +239,7 @@ GameTooltipStatusBar:HookScript("OnValueChanged", function(self, value)
 end)
 
 
-local iconFrame = CreateFrame("Frame", nil, ItemRefTooltip)
+local iconFrame = CreateFrame("Frame", nil, ItemRefTooltip, BackdropTemplateMixin and "BackdropTemplate")
 iconFrame:SetWidth(30)
 iconFrame:SetHeight(30)
 iconFrame:SetPoint("TOPRIGHT", ItemRefTooltip, "TOPLEFT", -3, 0)

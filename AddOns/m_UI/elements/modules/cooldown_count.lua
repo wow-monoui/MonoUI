@@ -131,4 +131,4 @@ if _G["ActionBarButtonEventsFrame"].frames then
 	end
 end
 
-hooksecurefunc("ActionBarButtonEventsFrame_RegisterFrame", actionButton_Register)
+hooksecurefunc(ActionBarButtonEventsFrameMixin, "RegisterFrame", actionButton_Register)

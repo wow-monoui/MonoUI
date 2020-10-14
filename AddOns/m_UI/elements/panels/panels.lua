@@ -4,7 +4,7 @@ local panels,k   = {},0
 -- advanced panel
 adv_panel = function(tag,x1,y1,width,height,anchor,point,rpoint,parent,
 						texture,border,strata,bg_col,br_col,blend) 
-	panels[k] = CreateFrame("frame",tag,parent) 
+	panels[k] = CreateFrame("frame",tag,parent, BackdropTemplateMixin and "BackdropTemplate")
 	panels[k]:SetWidth(width)
 	panels[k]:SetHeight(height)
 	panels[k]:SetPoint(point,anchor,rpoint,x1,y1)
@@ -27,7 +27,7 @@ end
 -- gradient panel
 grad_panel = function(tag,x1,y1,width,height,anchor,point,rpoint,parent,
 						texture,border,strata,bg_col,br_col,orientation,min_col,max_col, blend) 
-	panels[k] = CreateFrame("frame",tag,parent) 
+	panels[k] = CreateFrame("frame",tag,parent, BackdropTemplateMixin and "BackdropTemplate")
 	panels.bg = panels[k]:CreateTexture(nil, "PARENT")
 	panels.bg:SetTexture(texture or 1,1,1,1)
 	panels.bg:ClearAllPoints()

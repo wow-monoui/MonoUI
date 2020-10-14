@@ -52,7 +52,7 @@ A.gen_backdrop = function(f, opt)
 end
 
 A.make_backdrop = function(f)
-	local b = CreateFrame("Frame", "$parentBackdrop", f)
+	local b = CreateFrame("Frame", "$parentBackdrop", f, BackdropTemplateMixin and "BackdropTemplate")
 	b:SetPoint("TOPLEFT", -2, 2)
 	b:SetPoint("BOTTOMRIGHT", 2, -2)
 	A.gen_backdrop(b)
