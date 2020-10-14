@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Version: 5.3.1
 ## Title: oUF |cffffffffmono|r
 ## Notes: oUF layout

@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Notes: Custom MonoUI configuration
 ## Title: mono|cff6FDE90User|r|cffffffffConfig|r
 ## Author: Monolit

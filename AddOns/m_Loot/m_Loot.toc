@@ -1,4 +1,4 @@
-﻿## Interface: 80300
+﻿## Interface: 90001
 ## Title: mono|cffffffffLoot|r
 ## Author: Monolit
 ## Author: Kaitsuburi
