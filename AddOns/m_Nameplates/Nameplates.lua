@@ -51,7 +51,7 @@ local FACTION_BAR_COLORS = FACTION_BAR_COLORS
 
 -- FUNCTIONS
 local function CreateBackdrop(obj)
-    local frame = CreateFrame("Frame", nil, obj)
+    local frame = CreateFrame("Frame", nil, obj, BackdropTemplateMixin and "BackdropTemplate")
     frame:SetFrameLevel(obj:GetFrameLevel() - 1)
     frame:SetPoint("TOPLEFT", -backdrop.edgeSize, backdrop.edgeSize)
     frame:SetPoint("BOTTOMRIGHT", backdrop.edgeSize, -backdrop.edgeSize)

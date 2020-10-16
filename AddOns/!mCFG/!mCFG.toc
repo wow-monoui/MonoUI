@@ -7,28 +7,28 @@
 
 !mCFG_init.lua
 
-m_UI\cfg.lua
+# m_UI\cfg.lua
 init\m_UI.lua
 
-m_ActionBars\cfg.lua
+# m_ActionBars\cfg.lua
 init\m_ActionBars.lua
 
-m_Bags\cfg.lua
+# m_Bags\cfg.lua
 init\m_Bags.lua
 
-m_CombatText\cfg.lua
+# m_CombatText\cfg.lua
 init\m_CombatText.lua
 
-m_Loot\cfg.lua
+# m_Loot\cfg.lua
 init\m_Loot.lua
 
-m_Map\cfg.lua
+# m_Map\cfg.lua
 init\m_Map.lua
 
-m_Nameplates\cfg.lua
+# m_Nameplates\cfg.lua
 init\m_Nameplates.lua
 
-oUF_mono\cfg.lua
+# oUF_mono\cfg.lua
 init\oUF_mono.lua
 
 !mCFG.lua

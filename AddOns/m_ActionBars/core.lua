@@ -51,7 +51,47 @@ function m_ActionBars:OnInitialize()
     if IsAddOnLoaded("Dominos") then return end
 
     self:HideBlizzard()
+    self:ShowGrid()
     self:Enable()
+end
+
+function m_ActionBars:ShowGrid()
+    for i = 1, NUM_ACTIONBAR_BUTTONS do
+		local Button
+		local Reason = nil
+
+		Reason = ACTION_BUTTON_SHOW_GRID_REASON_EVENT
+
+		Button = CreateFrame("CheckButton", "ActionButton" .. i, UIParent, "ActionBarButtonTemplate")
+		Button:SetAttribute("showgrid", 1)
+		Button:SetAttribute("statehidden", true)
+		Button:Show()
+		--ActionButton_ShowGrid(Button, Reason)
+
+        Button = CreateFrame("CheckButton", "MultiBarRightButton" .. i, UIParent, "ActionBarButtonTemplate")
+		Button:SetAttribute("showgrid", 1)
+		Button:SetAttribute("statehidden", true)
+		Button:Show()
+		--ActionButton_ShowGrid(Button, Reason)
+
+        Button = CreateFrame("CheckButton", "MultiBarBottomRightButton" .. i, UIParent, "ActionBarButtonTemplate")
+		Button:SetAttribute("showgrid", 1)
+		Button:SetAttribute("statehidden", true)
+		Button:Show()
+		--ActionButton_ShowGrid(Button, Reason)
+
+        Button = CreateFrame("CheckButton", "MultiBarLeftButton" .. i, UIParent, "ActionBarButtonTemplate")
+		Button:SetAttribute("showgrid", 1)
+		Button:SetAttribute("statehidden", true)
+		Button:Show()
+		--ActionButton_ShowGrid(Button, Reason)
+
+        Button = CreateFrame("CheckButton", "MultiBarBottomLeftButton" .. i, UIParent, "ActionBarButtonTemplate")
+		Button:SetAttribute("showgrid", 1)
+		Button:SetAttribute("statehidden", true)
+		Button:Show()
+        --ActionButton_ShowGrid(Button, Reason)
+	end
 end
 
 -- Hides Blizzard default action bar elements
@@ -65,36 +105,6 @@ function m_ActionBars:HideBlizzard()
     MultiBarBottomRight:SetParent(UIHider)
     MultiBarLeft:SetParent(UIHider)
     MultiBarRight:SetParent(UIHider)
-
-    -- Hide MultiBar Buttons, but keep the bars alive
-    local btn
-    local reason = ACTION_BUTTON_SHOW_GRID_REASON_CVAR
-    for i = 1, NUM_ACTIONBAR_BUTTONS do
-        btn = _G[format("ActionButton%d", i)]
-        btn:SetAttribute("showgrid", 1)
-        btn:SetAttribute("statehidden", nil)
-        btn:ShowGrid(reason)
-
-        btn = _G[format("MultiBarRightButton%d", i)]
-        btn:SetAttribute("showgrid", 1)
-        btn:SetAttribute("statehidden", nil)
-        btn:ShowGrid(reason)
-
-        btn = _G[format("MultiBarBottomRightButton%d", i)]
-        btn:SetAttribute("showgrid", 1)
-        btn:SetAttribute("statehidden", nil)
-        btn:ShowGrid(reason)
-
-        btn = _G[format("MultiBarLeftButton%d", i)]
-        btn:SetAttribute("showgrid", 1)
-        btn:SetAttribute("statehidden", nil)
-        btn:ShowGrid(reason)
-
-        btn = _G[format("MultiBarBottomLeftButton%d", i)]
-        btn:SetAttribute("showgrid", 1)
-        btn:SetAttribute("statehidden", nil)
-        btn:ShowGrid(reason)
-    end
 
     UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
     UIPARENT_MANAGED_FRAME_POSITIONS["StanceBarFrame"] = nil
@@ -236,7 +246,16 @@ function m_ActionBars:Enable()
     local extrabar = mAB.CreateHolder("Bar6_holder", cfg.bars["Bar6"].position)
     local stancebar = mAB.CreateHolder("StanceBar_holder", cfg.bars["StanceBar"].position)
     local petbar = mAB.CreateHolder("PetBar_holder", { a = cfg.bars["PetBar"].position.a, x = cfg.bars["PetBar"].position.x * 1.25, y = cfg.bars["PetBar"].position.y * 1.25 })
-    --local extrabtn = mAB.CreateHolder("ExtraBtn_holder", cfg.ExtraButton["Position"])
+    
+    -- ExtraBar button implementation
+    local extrabtn = CreateFrame("Frame", "ExtraBtn_holder", UIParent, "SecureHandlerStateTemplate")
+    extrabtn:SetPoint(cfg.bars["ExtraButton"].position.a, cfg.bars["ExtraButton"].position.x, cfg.bars["ExtraButton"].position.y)
+    extrabtn:SetSize(160, 80)
+    extrabtn:SetFrameStrata("MEDIUM")
+    ExtraAbilityContainer:ClearAllPoints()
+    ExtraAbilityContainer:SetParent(extrabtn)
+    ExtraAbilityContainer:SetPoint("CENTER", extrabtn, "CENTER", 0, 0)
+    ExtraAbilityContainer.ignoreFramePositionManager = true
 
     -- Forging action bars
     -- parenting action buttons to our holders
@@ -349,20 +368,6 @@ function m_ActionBars:Enable()
     }
     for _, t in pairs(OverrideTexList) do
         OverrideActionBar[t]:SetAlpha(0)
-    end
-
-    -- ExtraBar button implementation
-    extrabtn = CreateFrame("Frame", "ExtraBtn_holder", UIParent)
-    if not cfg.bars["ExtraButton"].disable then
-        extrabtn:SetPoint(cfg.bars["ExtraButton"].position.a, cfg.bars["ExtraButton"].position.x, cfg.bars["ExtraButton"].position.y)
-        extrabtn:SetSize(160, 80)
-
-        ExtraActionBarFrame:SetParent(extrabtn)
-        ExtraActionBarFrame:ClearAllPoints()
-        ExtraActionBarFrame:SetPoint("CENTER", extrabtn, "CENTER", 0, 0)
-
-        --ExtraActionButton1.noResize = true
-        ExtraActionBarFrame.ignoreFramePositionManager = true
     end
 
     -- exit vehicle button for the lazy ones
@@ -533,7 +538,7 @@ function m_ActionBars:Enable()
         }
         local ShowHolder = function(holder, switch)
             if not _G[holder:GetName() .. "_overlay"] then
-                local f = CreateFrame("Frame", holder:GetName() .. "_overlay", BackdropTemplateMixin and "BackdropTemplate")
+                local f = CreateFrame("Frame", holder:GetName() .. "_overlay", UIParent, BackdropTemplateMixin and "BackdropTemplate")
                 f:SetAllPoints(holder)
                 f:SetBackdrop(backdrop_tab);
                 f:SetBackdropColor(.1, .1, .2, .8)

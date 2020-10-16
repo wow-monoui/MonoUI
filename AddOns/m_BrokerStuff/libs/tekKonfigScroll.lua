@@ -70,7 +70,7 @@ function lib.new(parent, offset, step)
 		if value == max then down:Disable() else down:Enable() end
 	end)
 
-	local border = CreateFrame("Frame", nil, f)
+	local border = CreateFrame("Frame", nil, f, "BackdropTemplate")
 	border:SetPoint("TOPLEFT", up, -5, 5)
 	border:SetPoint("BOTTOMRIGHT", down, 5, -3)
 	border:SetBackdrop(lib.bg)

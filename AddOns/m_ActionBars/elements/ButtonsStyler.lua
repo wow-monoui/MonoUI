@@ -72,10 +72,12 @@ local function ActionButtons(self)
 	
     if not nt then self.Styled = true return end
 	fl:Hide()
-	
-	if bo then bo:SetTexture(nil) end
-	--bo:Hide()
-	--bo.Show = function() return end -- this causes taint when auto attacking, but there's no other way of removing the bloody border
+	if bo then 
+		bo:SetAllPoints(bu)
+		bo:SetTexture(nil) 
+	end
+	-- bo:Hide()
+	-- bo.Show = function() return end -- this causes taint when auto attacking, but there's no other way of removing the bloody border
 	if fbg then
 		fbg:Hide()
 		--fbg.Show = function() return end
@@ -271,7 +273,9 @@ end
 -- Hooks
 ---------------------------------------------------
 hooksecurefunc(ActionBarActionButtonMixin, "Update", ActionButtons)
-if not IsAddOnLoaded("Dominos") then hooksecurefunc(ActionBarActionButtonMixin, "UpdateHotkeys", updatehotkey) end
+if not IsAddOnLoaded("Dominos") then 
+	hooksecurefunc(ActionBarActionButtonMixin, "UpdateHotkeys", updatehotkey) 
+end
 --hooksecurefunc("ActionButton_Update", VehicleButtons)
 hooksecurefunc("PetActionBar_Update", PetActionButtons)
 
@@ -279,7 +283,7 @@ hooksecurefunc("PossessBar_Update", PossessButtons)
 hooksecurefunc("StanceBar_UpdateState", StanceButtons)
 
 hooksecurefunc(ActionBarActionButtonMixin, "Update", ActionButtons_fixgrid)
---hooksecurefunc("ActionButton_OnEvent", ActionButtons_fixgrid)
+hooksecurefunc(ActionBarActionButtonMixin, "OnEvent", ActionButtons_fixgrid)
 
 SpellFlyout:HookScript("OnShow", SetupFlyoutButton)
 hooksecurefunc("ActionButton_UpdateFlyout", FlyoutButtons)

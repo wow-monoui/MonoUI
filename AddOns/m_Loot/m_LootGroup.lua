@@ -81,7 +81,7 @@ local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext, ...
 end
 
 local function CreateRollFrame()
-	local frame = CreateFrame("Frame", nil, UIParent)
+	local frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 	frame:SetWidth(cfg.loot.bar_width)
 	frame:SetHeight(cfg.loot.bar_height)
 	frame:SetBackdrop(backdrop)
@@ -102,7 +102,7 @@ local function CreateRollFrame()
 
 	frame.button = button
 
-	local buttonborder = CreateFrame("Frame", nil, button)
+	local buttonborder = CreateFrame("Frame", nil, button, BackdropTemplateMixin and "BackdropTemplate")
 	buttonborder:SetWidth(cfg.loot.iconsize)
 	buttonborder:SetHeight(cfg.loot.iconsize)
 	buttonborder:SetPoint("CENTER", button, "CENTER")
@@ -110,7 +110,7 @@ local function CreateRollFrame()
 	buttonborder:SetBackdropColor(1, 1, 1, 0)
 	frame.buttonborder = buttonborder
 	
-	local buttonborder2 = CreateFrame("Frame", nil, button)
+	local buttonborder2 = CreateFrame("Frame", nil, button, BackdropTemplateMixin and "BackdropTemplate")
 	buttonborder2:SetWidth(cfg.loot.iconsize+2)
 	buttonborder2:SetHeight(cfg.loot.iconsize+2)
 	buttonborder2:SetFrameLevel(buttonborder:GetFrameLevel()+1)
@@ -172,7 +172,7 @@ local function CreateRollFrame()
 	return frame
 end
 
-local LootRollAnchor = CreateFrame("Button", "LootRollAnchor", UIParent)
+local LootRollAnchor = CreateFrame("Button", "LootRollAnchor", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 LootRollAnchor:SetWidth(cfg.loot.bar_width) 
 LootRollAnchor:SetHeight(cfg.loot.bar_height)
 LootRollAnchor:SetBackdrop(backdrop)
