@@ -208,7 +208,7 @@ end
 
 lib_raid.gen_elements = function(f)
     -- Target tex
-    local tB = CreateFrame("Frame", nil, f)
+    local tB = CreateFrame("Frame", nil, f, "BackdropTemplate")
     tB:SetPoint("TOPLEFT", f, "TOPLEFT")
     tB:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT")
     tB:SetBackdrop(border)
@@ -217,7 +217,7 @@ lib_raid.gen_elements = function(f)
     f.TargetBorder = tB
 
     -- Focus tex
-    local fB = CreateFrame("Frame", nil, f)
+    local fB = CreateFrame("Frame", nil, f, "BackdropTemplate")
     fB:SetPoint("TOPLEFT", f, "TOPLEFT")
     fB:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT")
     fB:SetBackdrop(border)
@@ -234,7 +234,7 @@ lib_raid.gen_elements = function(f)
     f.raidDebuffs = debuffs
 
     -- Threat
-    local t = CreateFrame("Frame", nil, f)
+    local t = CreateFrame("Frame", nil, f, "BackdropTemplate")
     t:SetPoint("TOPLEFT", f, "TOPLEFT", -4, 4)
     t:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 4, -4)
     t:SetFrameStrata("LOW")

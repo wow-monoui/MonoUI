@@ -208,7 +208,7 @@ lib.gen_hpbar = function(f)
     end
     -- threat border
     if f.mystyle == "party" then
-        bg.t = CreateFrame("Frame", nil, bg)
+        bg.t = CreateFrame("Frame", nil, bg, "BackdropTemplate")
         bg.t:SetPoint("TOPLEFT", bg, "TOPLEFT", -1, 1)
         bg.t:SetPoint("BOTTOMRIGHT", bg, "BOTTOMRIGHT", 1, -1)
         bg.t:SetBackdrop({

@@ -275,20 +275,20 @@ local function NamePlateCastbarOnShow(self)
     self:SetPoint("RIGHT", newPlate)
     self:SetHeight(cfg.nameplates.castbar.height)
     --castbar icon
-    self.icon:ClearAllPoints()
-    self.icon:SetPoint("RIGHT", newPlate, "LEFT", -cbgap, 0)
-    if self.shield:IsShown() then
+    -- self.icon:ClearAllPoints()
+    -- self.icon:SetPoint("RIGHT", newPlate, "LEFT", -cbgap, 0)
+    -- if self.shield:IsShown() then
         --castbar shield
-        self.shield:ClearAllPoints()
-        self.shield:SetPoint("BOTTOM", self.icon, 0, -shieldSize / 2 + 2)
-        self.shield:SetSize(shieldSize, shieldSize)
-        --self.iconBorder:SetDesaturated(1)
-        self.iconBorder:SetVertexColor(0.8, 0, 0)
-        self:SetStatusBarColor(0.8, 0.8, 0.8)
-    else
-        --self.iconBorder:SetDesaturated(0)
-        self.iconBorder:SetVertexColor(0, 0, 0)
-    end
+        -- self.shield:ClearAllPoints()
+        -- self.shield:SetPoint("BOTTOM", self.icon, 0, -shieldSize / 2 + 2)
+        -- self.shield:SetSize(shieldSize, shieldSize)
+        -- self.iconBorder:SetDesaturated(1)
+        -- self.iconBorder:SetVertexColor(0.8, 0, 0)
+        -- self:SetStatusBarColor(0.8, 0.8, 0.8)
+    -- else
+        -- self.iconBorder:SetDesaturated(0)
+        -- self.iconBorder:SetVertexColor(0, 0, 0)
+    -- end
 end
 
 --NamePlateInit func
@@ -297,59 +297,35 @@ local function NamePlateInit(plate)
     plate.barFrame, plate.nameFrame = plate:GetChildren()
     plate.healthbar, plate.castBar = plate.barFrame:GetChildren()
     plate.threat, plate.border, plate.highlight, plate.level, plate.boss, plate.raid, plate.dragon = plate.barFrame:GetRegions()
+
     -- plate.name = plate.nameFrame:GetRegions()
     plate.healthbar.texture = plate.healthbar:GetRegions()
-    plate.castBar.texture, plate.castBar.border, plate.castBar.shield, plate.castBar.icon, plate.castBar.name, plate.castBar.nameShadow = plate.castBar:GetRegions()
-    plate.castBar.icon.layer, plate.castBar.icon.sublevel = plate.castBar.icon:GetDrawLayer()
     plate.rnp_checked = true
+
     --create a new plate
     RNP.nameplates[plate] = CreateFrame("Frame", "New" .. plate:GetName(), RNP)
     local newPlate = RNP.nameplates[plate]
     newPlate:SetSize(cfg.nameplates.hpWidth, cfg.nameplates.hpHeight + cfg.nameplates.castbar.height + cbgap)
+
     --keep the frame reference for later
     newPlate.blizzPlate = plate
     plate.newPlate = newPlate
-    --barFrame
-    --do not touch it
-    --nameFrame
-    -- plate.nameFrame:SetParent(RNP.pastebin)
-    -- plate.nameFrame:Hide()
+
     --healthbar
     plate.healthbar:SetParent(newPlate)
-    --plate.healthbar:SetStatusBarTexture(cfg.nameplates.statusbar)
     plate.healthbar.texture = plate.healthbar:GetStatusBarTexture()
     plate.healthbar.texture:SetTexture(nil)
+
     --new fake healthbar
     plate.healthbar._texture = plate.healthbar:CreateTexture(nil, "BACKGROUND", nil, -6)
     plate.healthbar._texture:SetAllPoints(plate.healthbar.texture)
     plate.healthbar._texture:SetTexture(cfg.nameplates.statusbar) --texture file path
     plate.healthbar._texture:SetVertexColor(0, 1, 1)
-    --plate.healthbar:SetBackdropColor(0, 0, 0, 1)
-    --[[
-    --healthbar bg test
-    plate.healthbar.bg = plate.healthbar:CreateTexture(nil, "BACKGROUND",nil,-6)
-    plate.healthbar.bg:SetAllPoints(plate.healthbar)
-    plate.healthbar.bg:SetTexture(1,1,1)
-    plate.healthbar.bg:SetVertexColor(1,0,0,0.2)
-    ]] --
     CreateBackdrop(plate.healthbar)
+
     --threat
     plate.threat:SetParent(plate.healthbar)
-    --plate.threat:SetTexture("Interface\\AddOns\\m_Nameplates\\media\\glowTex")
-    --plate.threat:SetTexCoord(0,1,0,1)
-    --level
-    --plate.level:SetParent(RNP.pastebin) --trash the level string, it will come back OnShow and OnDrunk otherwise ;)
-    --plate.level:Hide()
-    --hide textures
-    --plate.border:SetTexture(nil)
-    --plate.highlight:SetTexture(nil)
-    --plate.boss:SetTexture(nil)
-    --plate.dragon:SetTexture(nil)
-    --highlight
-    --plate.highlight:SetTexture(cfg.nameplates.statusbar)
-    --plate.highlight:SetVertexColor(0.25, 0.25, 0.25, 0.8)
-    --plate.highlight:ClearAllPoints()
-    --plate.highlight:SetAllPoints(plate.healthbar)
+
     --castbar
     plate.castBar:SetParent(newPlate)
     plate.castBar:SetStatusBarTexture(cfg.nameplates.statusbar)
@@ -359,24 +335,25 @@ local function NamePlateInit(plate)
     --plate.castbar.border:SetTexture(nil)
     --castbar icon
     --plate.castbar.icon:SetTexCoord(0.1,0.9,0.1,0.9)
-    plate.castBar.icon:SetSize(cfg.nameplates.castbar.icon_size, cfg.nameplates.castbar.icon_size)
+    --plate.castBar.icon:SetSize(cfg.nameplates.castbar.icon_size, cfg.nameplates.castbar.icon_size)
     --castbar spellname
-    plate.castBar.name:ClearAllPoints()
-    plate.castBar.name:SetPoint("BOTTOM", plate.castBar, 0, -5)
-    plate.castBar.name:SetPoint("LEFT", plate.castBar, 5, 0)
-    plate.castBar.name:SetPoint("RIGHT", plate.castBar, -5, 0)
+    --plate.castBar.name:ClearAllPoints()
+    --plate.castBar.name:SetPoint("BOTTOM", plate.castBar, 0, -5)
+    --plate.castBar.name:SetPoint("LEFT", plate.castBar, 5, 0)
+    --plate.castBar.name:SetPoint("RIGHT", plate.castBar, -5, 0)
     --plate.castbar.name:SetFont(cfg.nameplates.font, cfg.nameplates.fontsize, cfg.nameplates.fontflag)
     --plate.castbar.name:SetShadowColor(0,0,0,0)
     --castbar shield
     --plate.castbar.shield:SetTexture("Interface\\AddOns\\m_Nameplates\\media\\castbar_shield")
     --plate.castbar.shield:SetTexCoord(0,1,0,1)
-    plate.castBar.shield:SetDrawLayer(plate.castBar.icon.layer, plate.castBar.icon.sublevel + 2)
+    --plate.castBar.shield:SetDrawLayer(plate.castBar.icon.layer, plate.castBar.icon.sublevel + 2)
     --new castbar icon border
-    plate.castBar.iconBorder = plate.castBar:CreateTexture(nil, plate.castBar.icon.layer, nil, plate.castBar.icon.sublevel + 1)
+    --plate.castBar.iconBorder = plate.castBar:CreateTexture(nil, plate.castBar.icon.layer, nil, plate.castBar.icon.sublevel + 1)
     --plate.castbar.iconBorder:SetTexture(cfg.nameplates.icontex)
-    plate.castBar.iconBorder:SetPoint("TOPLEFT", plate.castBar.icon, "TOPLEFT", -1.5, 1.5)
-    plate.castBar.iconBorder:SetPoint("BOTTOMRIGHT", plate.castBar.icon, "BOTTOMRIGHT", 1.5, -1.5)
+    --plate.castBar.iconBorder:SetPoint("TOPLEFT", plate.castBar.icon, "TOPLEFT", -1.5, 1.5)
+    --plate.castBar.iconBorder:SetPoint("BOTTOMRIGHT", plate.castBar.icon, "BOTTOMRIGHT", 1.5, -1.5)
     --plate.castbar.nameShadow:SetTexture(nil)
+
     --new name
     newPlate.name = newPlate:CreateFontString(nil, "BORDER")
     newPlate.name:SetPoint("BOTTOM", newPlate, "TOP", 0, 2)
@@ -384,6 +361,7 @@ local function NamePlateInit(plate)
     newPlate.name:SetPoint("RIGHT", newPlate, 2, 0)
     --newPlate.name:SetFont(cfg.nameplates.font, cfg.nameplates.fontsize, cfg.nameplates.fontflag)
     plate._name = newPlate.name
+
     --raid icon
     --plate.raid:SetParent(newPlate)
     --plate.raid:ClearAllPoints()
