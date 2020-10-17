@@ -72,9 +72,9 @@ local function ActionButtons(self)
 	
     if not nt then self.Styled = true return end
 	fl:Hide()
-	if bo then 
+	if bo then
 		bo:SetAllPoints(bu)
-		bo:SetTexture(nil) 
+		bo:SetTexture(nil)
 	end
 	-- bo:Hide()
 	-- bo.Show = function() return end -- this causes taint when auto attacking, but there's no other way of removing the bloody border
@@ -93,7 +93,7 @@ local function ActionButtons(self)
 		if mn then mn:Hide() end
     end
     co:SetFont(cfg.mAB.media.button_font, cfg.buttons.count_font_size, "THINOUTLINE")
-	SetTextures(self, 1)
+	SetTextures(bu, 1)
     -- cut the border of the icons
     ic:SetTexCoord(0.1,0.9,0.1,0.9)
     ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
