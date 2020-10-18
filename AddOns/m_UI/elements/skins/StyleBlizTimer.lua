@@ -18,7 +18,7 @@ local function SkinTimer(bar)
 	bar:SetStatusBarTexture(cfg.media.statusbar)
 	bar:SetStatusBarColor(0.7, 0, 0)
 
-    local h = CreateFrame("Frame", nil, bar)
+    local h = CreateFrame("Frame", nil, bar, "BackdropTemplate")
     h:SetFrameLevel(0)
     h:SetPoint("TOPLEFT",-2,2)
     h:SetPoint("BOTTOMRIGHT",2,-2)

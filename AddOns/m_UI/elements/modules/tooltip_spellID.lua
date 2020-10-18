@@ -19,11 +19,11 @@ local function addLine(self,id,isItem)
 	self:Show()
 end
 hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)
-	local id = select(11,UnitAura(...))
+	local id = select(10,UnitAura(...))
 	if id then addLine(self,id) end
 end)
 GameTooltip:HookScript("OnTooltipSetSpell", function(self)
-	local id = select(3,self:GetSpell())
+	local name, id = self:GetSpell()
 	if id then addLine(self,id) end
 
 end)

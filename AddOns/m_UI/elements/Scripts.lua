@@ -3,7 +3,7 @@ local cfg = ns.cfg
 
 -- Proper Ready Check sound
 local ShowReadyCheckHook = function(self, initiator, timeLeft)
-	if initiator ~= "player" then PlaySound("ReadyCheck") end
+	if initiator ~= "player" then PlaySound(SOUNDKIT.READY_CHECK) end
 end
 hooksecurefunc("ShowReadyCheck", ShowReadyCheckHook)
 
