@@ -7,6 +7,7 @@ local mAB = m_ActionBars.mAB
 
 local _G = _G
 local type, pairs, hooksecurefunc, format = type, pairs, hooksecurefunc, format
+local UpdateMicroButtonsParent = UpdateMicroButtonsParent
 
 -- GLOBALS: LibStub, UIParent, PlaySound, SOUNDKIT, RegisterStateDriver, UnregisterStateDriver
 -- GLOBALS: BINDING_HEADER_Bartender4, BINDING_CATEGORY_Bartender4, BINDING_NAME_TOGGLEACTIONBARLOCK, BINDING_NAME_BTTOGGLEACTIONBARLOCK
@@ -15,10 +16,43 @@ local type, pairs, hooksecurefunc, format = type, pairs, hooksecurefunc, format
 -- GLOBALS: MainMenuBar, OverrideActionBar, MainMenuBarArtFrame, MainMenuExpBar, MainMenuBarMaxLevelBar, ReputationWatchBar
 -- GLOBALS: StanceBarFrame, PossessBarFrame, PetActionBarFrame, PlayerTalentFrame
 
-local Frames = {
-    MainMenuBar, MainMenuBarArtFrame, OverrideActionBar,
-    PossessBarFrame, ShapeshiftBarLeft, ShapeshiftBarMiddle, ShapeshiftBarRight,
-    TalentMicroButtonAlert, CollectionsMicroButtonAlert, EJMicroButtonAlert, CharacterMicroButtonAlert
+local FramesToHide = {
+	MainMenuBar,
+	--MainMenuBarArtFrame,
+	MainMenuBarArtFrameBackground,
+	MainMenuBarArtFrame.LeftEndCap,
+	MainMenuBarArtFrame.RightEndCap,
+	MainMenuBarArtFrame.PageNumber,
+	MainMenuBarPageNumber,
+	ActionBarDownButton,
+	ActionBarUpButton,
+	--OverrideActionBar,
+	OverrideActionBarExpBar,
+	OverrideActionBarHealthBar,
+	OverrideActionBarPowerBar,
+	OverrideActionBarPitchFrame,
+	OverrideActionBarLeaveFrameLeaveButton,
+	--BonusActionBarFrame,
+	--PossessBarFrame
+	MainMenuBarBackpackButton,
+	CharacterBag0Slot,
+    CharacterBag1Slot,
+    CharacterBag2Slot,
+    CharacterBag3Slot,
+
+	StanceBarLeft,
+	StanceBarMiddle,
+	StanceBarRight,
+	SlidingActionBarTexture0,
+	SlidingActionBarTexture1,
+	PossessBackground1,
+	PossessBackground2,
+	MainMenuBarTexture0,
+	MainMenuBarTexture1,
+	MainMenuBarTexture2,
+	MainMenuBarTexture3,
+	MainMenuBarLeftEndCap,
+    MainMenuBarRightEndCap,
 }
 
 function m_ActionBars:table_to_string(tbl,depth)
@@ -56,6 +90,7 @@ function m_ActionBars:OnInitialize()
 end
 
 function m_ActionBars:ShowGrid()
+    -- Normal action bars
     for i = 1, NUM_ACTIONBAR_BUTTONS do
 		local Button
 		local Reason = nil
@@ -91,7 +126,21 @@ function m_ActionBars:ShowGrid()
 		Button:SetAttribute("statehidden", true)
 		Button:Show()
         --ActionButton_ShowGrid(Button, Reason)
-	end
+    end
+
+    -- Override action bar
+    for i = 1, 6 do
+		local Button
+		local Reason = nil
+
+		Reason = ACTION_BUTTON_SHOW_GRID_REASON_EVENT
+
+		Button = CreateFrame("CheckButton", "OverrideActionBarButton" .. i, UIParent, "OverrideActionBarButtonTemplate")
+		Button:SetAttribute("showgrid", 1)
+		Button:SetAttribute("statehidden", true)
+		Button:Show()
+        --ActionButton_ShowGrid(Button, Reason)
+    end
 end
 
 -- Hides Blizzard default action bar elements
@@ -101,92 +150,14 @@ function m_ActionBars:HideBlizzard()
     UIHider:Hide()
     self.UIHider = UIHider
 
-    MultiBarBottomLeft:SetParent(UIHider)
-    MultiBarBottomRight:SetParent(UIHider)
-    MultiBarLeft:SetParent(UIHider)
-    MultiBarRight:SetParent(UIHider)
-
-    UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
-    UIPARENT_MANAGED_FRAME_POSITIONS["StanceBarFrame"] = nil
-    UIPARENT_MANAGED_FRAME_POSITIONS["PossessBarFrame"] = nil
-    UIPARENT_MANAGED_FRAME_POSITIONS["MultiCastActionBarFrame"] = nil
-    UIPARENT_MANAGED_FRAME_POSITIONS["PETACTIONBAR_YPOS"] = nil
-
-    --MainMenuBar:UnregisterAllEvents()
-    --MainMenuBar:SetParent(UIHider)
-    --MainMenuBar:Hide()
-    MainMenuBar:EnableMouse(false)
-    MainMenuBar:UnregisterEvent("DISPLAY_SIZE_CHANGED")
-    MainMenuBar:UnregisterEvent("UI_SCALE_CHANGED")
-
-    local animations = { MainMenuBar.slideOut:GetAnimations() }
-    animations[1]:SetOffset(0, 0)
-
-    if OverrideActionBar then -- classic doesn't have this
-        animations = { OverrideActionBar.slideOut:GetAnimations() }
-        animations[1]:SetOffset(0, 0)
-    end
-
-    MainMenuBarArtFrame.LeftEndCap:Hide()
-    MainMenuBarArtFrame.RightEndCap:Hide()
-    MainMenuBarArtFrame.PageNumber:Hide()
-    MainMenuBarArtFrameBackground:Hide()
-    ActionBarUpButton:Hide()
-    ActionBarDownButton:Hide()
-
-    if MicroButtonAndBagsBar then -- classic doesn't have this
-        MicroButtonAndBagsBar:Hide()
-        MicroButtonAndBagsBar:SetParent(UIHider)
-    end
-
-    if StatusTrackingBarManager then
-        StatusTrackingBarManager:Hide()
-        --StatusTrackingBarManager:SetParent(UIHider)
-    end
-
-    StanceBarFrame:UnregisterAllEvents()
-    StanceBarFrame:Hide()
-    StanceBarFrame:SetParent(UIHider)
-
-    --BonusActionBarFrame:UnregisterAllEvents()
-    --BonusActionBarFrame:Hide()
-    --BonusActionBarFrame:SetParent(UIHider)
-
-    if PossessBarFrame then -- classic doesn't have this
-        --PossessBarFrame:UnregisterAllEvents()
-        --PossessBarFrame:Hide()
-        --PossessBarFrame:SetParent(UIHider)
-    end
-
-    if MultiCastActionBarFrame then
-        MultiCastActionBarFrame:UnregisterAllEvents()
-        MultiCastActionBarFrame:Hide()
-        MultiCastActionBarFrame:SetParent(UIHider)
-    end
-
-    --PetActionBarFrame:UnregisterAllEvents()
-    --PetActionBarFrame:Hide()
-    --PetActionBarFrame:SetParent(UIHider)
-
-    if PlayerTalentFrame then
-        PlayerTalentFrame:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-    else
-        hooksecurefunc("TalentFrame_LoadUI", function() PlayerTalentFrame:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED") end)
-    end
-
-    if MainMenuBarPerformanceBarFrame then
-        MainMenuBarPerformanceBarFrame:Hide()
-        MainMenuBarPerformanceBarFrame:SetParent(UIHider)
-    end
-
-    if MainMenuExpBar then
-        MainMenuExpBar:Hide()
-        MainMenuExpBar:SetParent(UIHider)
-    end
-
-    if ReputationWatchBar then
-        ReputationWatchBar:Hide()
-        ReputationWatchBar:SetParent(UIHider)
+    -- Hide main frames
+    for _, f in pairs(FramesToHide) do
+        if f:GetObjectType() == "Texture" then
+          --f:UnregisterAllEvents()
+          f:SetTexture(nil)
+        else
+          f:SetParent(UIHider)
+        end
     end
 end
 

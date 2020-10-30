@@ -83,7 +83,8 @@ local function Update(object, event, unit)
 
 	--Buffs
 	while ( true ) do
-		local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable = UnitAura(unit, index, "HELPFUL")
+		local name, icon, count, debuffType, duration, expirationTime, source, isStealable, 
+		nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod, _ = UnitAura(unit, index, "HELPFUL")
 		if ( not name ) then break end
 		
 		if ( auraList[name] and auraList[name] >= priority ) then
@@ -100,7 +101,8 @@ local function Update(object, event, unit)
 	
 	--Debuffs 
 	while ( true ) do
-		local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable = UnitAura(unit, index, "HARMFUL")
+		local name, icon, count, debuffType, duration, expirationTime, source, isStealable, 
+		nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod, _ = UnitAura(unit, index, "HARMFUL")
 		if ( not name ) then break end
 		
 		if ( auraList[name] and auraList[name] >= priority ) then
