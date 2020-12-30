@@ -82,9 +82,9 @@ local frames = {
     -- "MiniMapVoiceChatFrame",
     "MiniMapWorldMapButton",
     "MiniMapMailBorder",
---  "GarrisonLandingPageMinimapButton",
---  "MiniMapBattlefieldBorder",
---  "FeedbackUIButton",
+-- "GarrisonLandingPageMinimapButton",
+-- "MiniMapBattlefieldBorder",
+-- "FeedbackUIButton",
 --	"MinimapBackdrop",
 }
 
@@ -111,10 +111,21 @@ QueueStatusMinimapButtonBorder:Hide()
 -- QueueStatusMinimapButtonBorder:SetFrameStrata("MEDIUM")
 
 -- Garrison Icon
-GarrisonLandingPageMinimapButton:ClearAllPoints()
-GarrisonLandingPageMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 12, -12)
-GarrisonLandingPageMinimapButton:SetScale(0.75)
-GarrisonLandingPageMinimapButton:SetFrameStrata("LOW")
+hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function(self)
+    local button = _G.GarrisonLandingPageMinimapButton
+	if button then
+		local scale, pos = 0.75, "BOTTOMRIGHT"
+		button:ClearAllPoints()
+		button:SetPoint(pos, Minimap, pos, 36, -36)
+		button:SetScale(scale)
+
+		local box = _G.GarrisonLandingPageTutorialBox
+		if box then
+			box:SetScale(1/scale)
+			box:SetClampedToScreen(true)
+		end
+	end
+end)
 
 -- Instance Difficulty flag
 MiniMapInstanceDifficulty:ClearAllPoints()

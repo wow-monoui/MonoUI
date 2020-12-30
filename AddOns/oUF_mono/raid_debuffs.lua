@@ -11,7 +11,7 @@ local L = {
 	["Siege of Orgrimmar"] = 953, -- 369
 	["Highmaul"] = 994, -- 477
 	["Blackrock Foundry"] = 988, -- 457
-    ["Hellfire Citadel"] = 1026, -- 669
+  ["Hellfire Citadel"] = 1026, -- 669
 }
 
 raid_debuffs = {

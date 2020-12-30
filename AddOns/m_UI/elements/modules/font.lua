@@ -83,7 +83,9 @@ UIFonts:SetScript("OnEvent", function(self, event, addon)
 	SetFont(ErrorFont, 						NORMAL, 16)
 	SetFont(QuestFontNormalSmall, 			NORMAL, 13, nil, nil, nil, nil, 0.54, 0.4, 0.1)
 	SetFont(WorldMapTextFont, 				NORMAL, 31, "THICKOUTLINE", nil, nil, nil, 0, 0, 0, 1, -1)
-	SetFont(HelpFrameKnowledgebaseNavBarHomeButtonText, NORMAL, 13, nil, nil, nil, nil, 0, 0, 0, 1, -1)
+	
+	-- TODO: HelpFrameKnowledgebaseNavBarHomeButtonText missing in Shadowlands
+	-- SetFont(HelpFrameKnowledgebaseNavBarHomeButtonText, NORMAL, 13, nil, nil, nil, nil, 0, 0, 0, 1, -1)
 
 	-- Channel list
 	for i=1, MAX_WOW_CHAT_CHANNELS do

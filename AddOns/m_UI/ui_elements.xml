@@ -24,6 +24,7 @@
 	<Script file='elements\automation\pullCountdown.lua' />
 	<Script file='elements\automation\shoutDrink.lua' />
 	<Script file='elements\automation\shoutInterrupt.lua' />
+  <Script file='elements\automation\TalkingHead.lua' />
 	
 	<Script file='elements\tooltip\SpellID.lua' />
 	

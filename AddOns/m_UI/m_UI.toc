@@ -1,8 +1,8 @@
-## Interface: 90001
+## Interface: 90002
 ## Notes: Compilation of essential UI elements.
 ## Title: mono|cffffffffUIelements|r
 ## Author: Monolit
-## Version: 5.1.3
+## Version: 6.0.0
 ## OptionalDeps: !mCFG, DBM-Core, NugRunning, Bigwigs, oUF_mono, Skada
 
 cfg.lua
@@ -33,6 +33,7 @@ elements\automation\pullCountdown.lua
 elements\automation\shoutDrink.lua
 elements\automation\shoutInterrupt.lua
 elements\automation\AutoRepair&Sell.lua
+elements\automation\TalkingHead.lua
 
 elements\automation\Invite.lua
 elements\automation\BuyStack.lua
@@ -60,6 +61,5 @@ elements\modules\toggle_cloak_helm.lua
 elements\modules\tooltip.lua
 elements\modules\tooltip_spellID.lua
 elements\modules\xp_bar.lua
-elements\modules\azpower_bar.lua
 
 elements\test\test.lua

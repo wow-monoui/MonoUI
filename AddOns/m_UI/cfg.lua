@@ -141,14 +141,17 @@ cfg.modules = {
 	},
 }
 
-cfg.automation = {		-- automation settings 
-	screenshot 			= true,							-- automatic screenshot when you get achivement
-	log 				= false,							-- enable combat log writing when in instance
-	sell_junk 			= true,							-- sell all the grey junk to the vendor
-	repair				= true,							-- auromatic repair at vendors
-	accept_invites		= true,							-- accept invites from guild/friends
-	whisper_invite		= {	["enable"] = true,			-- automatic invite by whisper
-							["word"] = "inv",},			-- pass word for invitation
+cfg.automation = {		      -- automation settings 
+  talking_head    = true,   -- disable talking head
+  screenshot 		  = true,		-- automatic screenshot when you get achivement
+  log 				    = false,	-- enable combat log writing when in instance
+  sell_junk 		  = true,		-- sell all the grey junk to the vendor
+  repair				  = true,		-- auromatic repair at vendors
+  accept_invites	= true,		-- accept invites from guild/friends
+	whisper_invite	= {
+    ["enable"] = true,      -- automatic invite by whisper
+    ["word"] = "inv",       -- pass word for invitation
+  },
 	roll_greens			= true,							-- automatic 'greed' selection 
 	accept_disenchant	= true,							-- auctomatic disenchant confirmation for rare+ quality items
 	decline_duel		= true,							-- automaticly decline duels
