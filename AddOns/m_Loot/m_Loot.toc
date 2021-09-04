@@ -1,8 +1,8 @@
-﻿## Interface: 90001
+﻿## Interface: 90100
 ## Title: mono|cffffffffLoot|r
 ## Author: Monolit
 ## Author: Kaitsuburi
-## Version: 8.2.0
+## Version: 6.0.0
 ## Notes: Reworked Butsu + teksLoot compilation, so credits to the original authors
 
 cfg.lua

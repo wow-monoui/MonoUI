@@ -1,7 +1,7 @@
-## Interface: 90001
+## Interface: 90100
 ## Author: Monolit
 ## Title: mono|cffffffffNameplates|r
-## Version: 5.0
+## Version: 6.0.0
 ## Notes: simple nameplate addon
 ## Credits: Dawn, Caellian, shUI
 

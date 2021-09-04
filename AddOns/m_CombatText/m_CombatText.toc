@@ -1,9 +1,9 @@
-## Interface: 90001
+## Interface: 90100
 ## Notes: Scrolling combat text
 ## Title: mono|cffffffffCombatText|r
 ## Author: Monolit
 ## Author: Kaitsuburi
-## Version: 8.2.0
+## Version: 6.0.0
 ## Credits: Affli, Alza
 
 cfg.lua

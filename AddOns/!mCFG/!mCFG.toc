@@ -1,8 +1,8 @@
-## Interface: 90001
+## Interface: 90100
 ## Notes: Custom MonoUI configuration
 ## Title: mono|cff6FDE90User|r|cffffffffConfig|r
 ## Author: Monolit
-## Version: 1.0
+## Version: 6.0.0
 ## X-mCFG: mCFG
 
 !mCFG_init.lua

@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90100
 ## Notes: Compilation of essential UI elements.
 ## Title: mono|cffffffffUIelements|r
 ## Author: Monolit

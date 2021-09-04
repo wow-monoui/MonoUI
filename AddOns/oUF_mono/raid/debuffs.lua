@@ -3,6 +3,7 @@ local cfg = ns.cfg
 local oUF = ns.oUF or oUF
 
 local _, class = UnitClass("player")
+
 local dispellClass = {
   PRIEST = {Magic = true, Disease = true},
   SHAMAN = {Magic = true, Curse = true},
@@ -42,8 +43,9 @@ getZone:SetScript(
 
 local debuffs = raid_debuffs.debuffs
 local asc_debuffs = raid_debuffs.ascending
+
 local CustomFilter = function(icons, ...)
-  local _, icon, name, _, _, _, dtype, _, _, caster, spellID = ...
+  local _, icon, name, _, _, dtype, _, _, caster, spellID = ...
 
   icon.asc = false
   icon.priority = 0
@@ -117,6 +119,7 @@ end
 -- making timers
 local GetTime = GetTime
 local floor, fmod = floor, math.fmod
+
 local FormatTime = function(s)
   if s >= 3600 then
     return format("%dh", floor(s / 3600 + 0.5))
@@ -125,6 +128,7 @@ local FormatTime = function(s)
   end
   return format("%d", fmod(s, 60))
 end
+
 local SetTimer = function(self, elapsed)
   self.elapsed = (self.elapsed or 0) + elapsed
   if self.elapsed < .25 then
@@ -138,6 +142,7 @@ local SetTimer = function(self, elapsed)
     self.remaining:SetText(FormatTime(expires))
   end
 end
+
 -- special timer for debuffs which require ascending timers
 local SetAscTimer = function(self, elapsed)
   self.elapsed = (self.elapsed or 0) + elapsed
@@ -193,8 +198,7 @@ local updateIcon = function(unit, debuffs)
   local hide = true
   local index = 1
   while true do
-    local name, texture, count, dtype, duration, expires, caster, isStealable, 
-    nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unit, index, "HARMFUL")
+    local name, texture, count, dtype, duration, expires, caster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unit, index, "HARMFUL")
     if not name then
       break
     end

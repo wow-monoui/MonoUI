@@ -1,6 +1,6 @@
-## Interface: 90001
+## Interface: 90100
 ## Author: Monolit
-## Version: 1.6.0
+## Version: 6.0.0
 ## Title: mono|cffffffffBrokerStuff|r
 ## Notes: Broker plugins compilation
 ## X-Credits: All the original authors: Funkydude(Durability), p3lim(Equipment), Curney(NameToggle), Torhal(Volumizer)

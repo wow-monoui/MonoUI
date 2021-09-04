@@ -1,7 +1,7 @@
-## Interface: 90001
+## Interface: 90100
 ## Title: mono|cffffffffBags|r
 ## Author: Monolit, Cargor
-## Version: 3.0
+## Version: 6.0.0
 ## Notes: Simple all-in-one inventory.
 ## OptionalDeps: cargBags
 cfg.lua

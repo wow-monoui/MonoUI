@@ -5,7 +5,7 @@ local L = {
 	fish = "Fishy loot",
 	empty = "Empty slot",
 }
-local addon = CreateFrame("Button", "m_Loot", UIParent, BackdropTemplateMixin and "BackdropTemplate")
+local addon = CreateFrame("Button", "m_Loot", UIParent, "BackdropTemplate")
 local title = addon:CreateFontString(nil, "OVERLAY")
 local lb = CreateFrame("Button", "m_LootAdv", addon, "UIPanelScrollDownButtonTemplate")		-- Link button
 local LDD = CreateFrame("Frame", "m_LootLDD", addon, "UIDropDownMenuTemplate")				-- Link dropdown menu frame
@@ -91,6 +91,7 @@ local function LDD_Initialize()
     
     info = nil
 end
+
 local OnEnter = function(self)
 	local slot = self:GetID()
 	if(GetLootSlotType(slot) == LOOT_SLOT_ITEM) then
@@ -146,7 +147,7 @@ local OnUpdate = function(self)
 end
 
 local createSlot = function(id)
-	local frame = CreateFrame("Button", 'm_LootSlot'..id, addon, BackdropTemplateMixin and "BackdropTemplate")
+	local frame = CreateFrame("Button", 'm_LootSlot'..id, addon, "BackdropTemplate")
 	frame:SetPoint("LEFT", 8, 0)
 	frame:SetPoint("RIGHT", -8, 0)
 	frame:SetHeight(cfg.loot.iconsize-2)
@@ -301,8 +302,7 @@ addon.LOOT_OPENED = function(self, event, autoloot)
  
 			if(GetLootSlotType(i) == LOOT_SLOT_MONEY) then
 				item = item:gsub("\n", ", ")
-			end 
-
+			end
 
 			if(quantity and quantity > 1) then
 				slot.count:SetText(quantity)
