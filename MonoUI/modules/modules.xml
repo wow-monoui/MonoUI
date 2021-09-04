@@ -1,0 +1,11 @@
+<Ui xmlns='http://www.blizzard.com/wow/ui/'>
+  <Include file="m_ActionBars.xml"/>
+  <Include file="m_Bags.xml"/>
+  <Include file="m_BrokerStuff.xml"/>
+  <Include file="m_CFG.xml"/>
+  <Include file="m_CombatText.xml"/>
+  <Include file="m_Loot.xml"/>
+  <Include file="m_Nameplates.xml"/>
+  <Include file="m_UI.xml"/>
+  <Include file="oUF_mono.xml"/>
+</Ui>
