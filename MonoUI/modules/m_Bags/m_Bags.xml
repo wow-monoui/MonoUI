@@ -1,0 +1,6 @@
+<Ui xmlns='http://www.blizzard.com/wow/ui/'>
+  <Script file="cfg.lua" />
+  <Script file="..\m_CFG\mCFG_layer.lua" />
+  <Script file="SortBags.lua" />
+  <Script file="m_Bags.lua" />
+</Ui>

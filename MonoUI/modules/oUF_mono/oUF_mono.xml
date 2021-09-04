@@ -1,0 +1,23 @@
+<Ui xmlns='http://www.blizzard.com/wow/ui/'>
+  <Script file="embeds\Smooth.lua" />
+  <Script file="embeds\AuraTracker.lua" />
+  <Script file="embeds\Trinkets.lua" />
+  <Script file="embeds\CombatFeedback.lua" />
+
+  <Include file="embeds\PartyPets.xml" />
+
+  <Script file="embeds\MonkHarmonyBar.lua" />
+  <Script file="embeds\TotemBar.lua" />
+
+  <Script file="cfg.lua" />
+  <Script file="..\m_CFG\mCFG_layer.lua" />
+  <Script file="tags.lua" />
+  <Script file="embeds\Castbar.lua" />
+  <Script file="lib.lua" />
+  <Script file="core.lua" />
+
+  <Script file="raid_tags.lua" />
+  <Script file="raid_debuffs.lua" />
+  
+  <Include file="raid\raid.xml" />
+</Ui>

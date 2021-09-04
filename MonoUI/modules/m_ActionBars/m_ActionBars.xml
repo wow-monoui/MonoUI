@@ -1,0 +1,10 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+  <Script file="cfg.lua" />
+  <Script file="..\m_CFG\mCFG_layer.lua" />
+  <Script file="elements\ActionBarsLib.lua" />
+  <Script file="core.lua" />
+  <Script file="elements\RaidMark.lua" />
+  <Script file="elements\ButtonsStyler.lua" />
+  <Script file="elements\HoverBind.lua" />
+  <Script file="elements\RangeCheck.lua" />
+</Ui>

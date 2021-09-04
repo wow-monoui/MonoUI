@@ -1,0 +1,12 @@
+<Ui xmlns='http://www.blizzard.com/wow/ui/'>
+  <Script file="elements\Ampere.lua" />
+  <Script file="elements\Broker_Durability.lua" />
+  <Script file="elements\Broker_Equipment.lua" />
+  <Script file="elements\Broker_FPS.lua" />
+  <Script file="elements\Broker_Latency.lua" />
+  <Script file="elements\Broker_Memory.lua" />
+  <Script file="elements\Broker_Equipment.lua" />
+  <Script file="elements\Broker_Money.lua" />
+
+  <Script file="layout.lua" />
+</Ui>

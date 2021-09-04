@@ -1,11 +1,12 @@
 ## Interface: 90100
 ## Author: Mono, Kaitsuburi
 ## Version: 7.0.0
-## Title: |cff1784d1ElvUI|r
+## Title: mono|cffffffffUI|r
 ## Notes: User Interface replacement AddOn for World of Warcraft.
-## SavedVariables: ElvDB, ElvPrivateDB
-## SavedVariablesPerCharacter: ElvCharacterDB
+## SavedVariables: MonoDB, MonoPrivateDB
+## SavedVariablesPerCharacter: MonoCharacterDB
 ## OptionalDeps: NugRunning
 ## X-oUF: oUF_Mono
 
-modules/modules.xml
+libraries\libraries.xml
+modules\modules.xml
