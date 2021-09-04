@@ -1,6 +1,7 @@
 ﻿local addon, ns = ...
 local cfg = ns.cfg
 local A = ns.A
+
 if not cfg.skins.skada or not IsAddOnLoaded("Skada") then return end
 
 local Skada = Skada
@@ -18,7 +19,7 @@ barmod.ApplySettings = function(self, win)
 	skada:SetSpacing(1, 5)
 	skada:SetFont(cfg.media.font, 10)
 	skada:SetFrameLevel(5)
-	
+
 	skada:SetBackdrop(nil)
 	if not skada.border then
 		A.make_backdrop(skada)
@@ -26,10 +27,10 @@ barmod.ApplySettings = function(self, win)
 		skada.backdrop:SetPoint('TOPLEFT', win.bargroup.button or win.bargroup, 'TOPLEFT',-1,0)
 		skada.backdrop:SetPoint('BOTTOMRIGHT', win.bargroup, 'BOTTOMRIGHT',1,0)
 	end
-		
+
 	local titlefont = CreateFont("TitleFont"..win.db.name)
 	titlefont:SetFont(cfg.media.font, 10, "THINOUTLINE")
-		
+
 	if win.db.enabletitle then
 		--A.gen_backdrop(win.bargroup.button)
 			skada.button:SetNormalFontObject(titlefont)

@@ -611,38 +611,37 @@ local dataobj = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("Ampere", 
 			else
 				if IsAddOnLoaded("Dominos") then
 					Dominos:ToggleLockedFrames()
-				elseif IsAddOnLoaded("m_ActionBars") then
+				else
 					m_ActionBars_Toggle_Extra_Bars()
 				end
 			end
 		elseif b == "MiddleButton" then
 			if IsAddOnLoaded("Dominos") then
 				Dominos:ToggleBindingMode()
-			elseif IsAddOnLoaded("m_ActionBars") then
+			else
 				m_ActionBars.MouseOverBind()
 			end
 		end
 	end,
 	OnTooltipShow = function(tooltip)
-      tooltip:AddLine("|cffffffffQuick configuration|r",1,1,1)
-      --tooltip:AddLine(" ")
-      tooltip:AddDoubleLine("  Interface configuration","[|cffffffffLeftClick|r]")
+    tooltip:AddLine("|cffffffffQuick configuration|r",1,1,1)
+    tooltip:AddLine(" ")
+    tooltip:AddDoubleLine("  Interface configuration","[|cffffffffLeftClick|r]")
 	  tooltip:AddDoubleLine("  Volume settings","[|cffffffffAlt+LeftClick|r]")
-	if IsAddOnLoaded("Dominos") then
+    if IsAddOnLoaded("Dominos") then
       tooltip:AddDoubleLine("  Dominos: configure bars","[|cffffffffRightClick|r]")
-	  tooltip:AddDoubleLine("  Dominos: set key bindings","[|cffffffffMiddleClick|r]")
-	end
-	if IsAddOnLoaded("m_ActionBars") and not IsAddOnLoaded("Dominos") then
+      tooltip:AddDoubleLine("  Dominos: set key bindings","[|cffffffffMiddleClick|r]")
+    else
       tooltip:AddDoubleLine("  m_ActionBars: toggle extra bars","[|cffffffffRightClick|r]")
-	  tooltip:AddDoubleLine("  m_ActionBars: set key bindings","[|cffffffffMiddleClick|r]")
-	end
+      tooltip:AddDoubleLine("  m_ActionBars: set key bindings","[|cffffffffMiddleClick|r]")
+    end
 	  tooltip:AddLine("|cffffffffPlayer Names|r")
-      tooltip:AddDoubleLine("  Friendly player names","[|cffffffffCtrl+LeftClick|r]")
-      tooltip:AddDoubleLine("  Enemy player names","[|cffffffffCtrl+RightClick|r]")
+    tooltip:AddDoubleLine("  Friendly player names","[|cffffffffCtrl+LeftClick|r]")
+    tooltip:AddDoubleLine("  Enemy player names","[|cffffffffCtrl+RightClick|r]")
 	  tooltip:AddLine("|cffffffffNameplates|r")
 	  tooltip:AddDoubleLine("  Toggle friendly nameplates","[|cffffffffShift+LeftClick|r]")
-      tooltip:AddDoubleLine("  Toggle enemy nameplates","[|cffffffffShift+RightClick|r]")
-      tooltip:Show()
+    tooltip:AddDoubleLine("  Toggle enemy nameplates","[|cffffffffShift+RightClick|r]")
+    tooltip:Show()
    end
 })
 
