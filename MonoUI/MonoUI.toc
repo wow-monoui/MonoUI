@@ -5,7 +5,7 @@
 ## Notes: User Interface replacement AddOn for World of Warcraft.
 ## SavedVariables: MonoDB, MonoPrivateDB
 ## SavedVariablesPerCharacter: MonoCharacterDB
-## OptionalDeps: Bigwigs, ]DBM-Core, NugRunning, Skada
+## OptionalDeps: Bigwigs, DBM-Core, NugRunning, Skada
 ## X-oUF: oUF_Mono
 
 libraries\libraries.xml
