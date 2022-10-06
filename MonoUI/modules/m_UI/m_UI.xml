@@ -34,7 +34,7 @@
   <Script file="elements\automation\Loot.lua" />
 
   <Script file="elements\chat\chat.lua" />
-  <Script file="elements\chat\armory_link.lua" />
+  <!-- <Script file="elements\chat\armory_link.lua" /> -->
   <Script file="elements\chat\meters_reports.lua" />
 
   <Script file="elements\modules\alert_frames.lua" />

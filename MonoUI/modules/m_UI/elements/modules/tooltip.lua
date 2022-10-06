@@ -39,16 +39,19 @@ local types = {
 }
 
 for _, v in pairs(tooltips) do
---	v:DisableDrawLayer("BACKGROUND")
+  if not v.SetBackdrop then
+	  Mixin(v, BackdropTemplateMixin)
+  end
+  v:DisableDrawLayer("BACKGROUND")
 	v:SetBackdrop(backdrop)
 	v:SetBackdropColor(0, 0, 0, 0.6)
 	v:SetBackdropBorderColor(0, 0, 0, 1)
-	local bg = CreateFrame("Frame", nil, v)
+	local bg = CreateFrame("Frame", nil, v, BackdropTemplateMixin and "BackdropTemplate")
 	bg:SetAllPoints(v)
 	bg:SetFrameLevel(0)
---[[ 	bg:SetBackdrop(backdrop)
+  bg:SetBackdrop(backdrop)
 	bg:SetBackdropColor(0, 0, 0, 0.6)
-	bg:SetBackdropBorderColor(0, 0, 0, 1) ]]
+	bg:SetBackdropBorderColor(0, 0, 0, 1)
 	
 	v:SetScale(scale)
 	v:SetScript("OnShow", function(self)

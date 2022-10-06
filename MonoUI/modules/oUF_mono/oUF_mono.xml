@@ -3,8 +3,8 @@
   <Script file="embeds\AuraTracker.lua" />
   <Script file="embeds\Trinkets.lua" />
   <Script file="embeds\CombatFeedback.lua" />
-
-  <Include file="embeds\PartyPets.xml" />
+  <Script file="embeds\WarlockSpecBars.lua" />
+  <Include file="embeds\PartyPets.xml" /> 
 
   <Script file="embeds\MonkHarmonyBar.lua" />
   <Script file="embeds\TotemBar.lua" />

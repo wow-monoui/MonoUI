@@ -30,7 +30,7 @@ local cargoShip = LibStub("LibCargoShip-2.1")
 --------> BOTTOM LEFT PANEL
 local LPx, LPy = 282, 10
 local LPspacing = 10
-local normal_font =  "Interface\\Addons\\m_BrokerStuff\\media\\font.ttf"
+local normal_font =  "Interface\\Addons\\MonoUI\\modules\\m_BrokerStuff\\media\\font.ttf"
 
 local equip = cargoShip("Broker_Equipment",{
 scale = 1.2,

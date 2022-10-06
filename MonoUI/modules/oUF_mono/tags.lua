@@ -417,7 +417,8 @@ oUF.Tags.Events['mono:ls'] = 'UNIT_AURA'
 -- Prayer of Mending
 --oUF.pomCount = {1,2,3,4,5,6}
 oUF.Tags.Methods['raid:pom'] = function(u)
-  local _, _,_, c, _,_,_, source = UnitAura(u, GetSpellInfo(33076))
+  local _, _,_, c, _,_,_, source = ns.lib.UnitBuff("player", 33076)
+  -- UnitAura(u, GetSpellInfo(33076))
   if source == "player" then
     if(c) and (c ~= 0) then return "|cff79DB79"..c.."|r" end
   else
@@ -428,7 +429,8 @@ oUF.Tags.Events['raid:pom'] = "UNIT_AURA"
 -- Lifebloom
 --oUF.lbCount = { 1, 2, 3 }
 oUF.Tags.Methods['raid:lb'] = function(u)
-  local _, _,_, _,_,_, expirationTime, source,_ = UnitAura(u, GetSpellInfo(33763))
+  local _, _,_, _,_,_, expirationTime, source, _, _, _ = ns.lib.UnitBuff("player", 33763)
+  -- UnitAura(u, GetSpellInfo(33763))
   if not (source == "player") then return end
   local spellTimer = GetTime()-expirationTime
   if spellTimer > -2 then

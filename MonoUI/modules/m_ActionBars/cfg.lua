@@ -7,10 +7,10 @@ cfg.mAB = {
     spacing = 2, -- spacing between buttons
     media = {
         -- MEDIA
-        textures_normal = "Interface\\Addons\\m_ActionBars\\media\\icon",
-        textures_pushed = "Interface\\Addons\\m_ActionBars\\media\\icon",
+        textures_normal = "Interface\\Addons\\MonoUI\\modules\\m_ActionBars\\media\\icon",
+        textures_pushed = "Interface\\Addons\\MonoUI\\modules\\m_ActionBars\\media\\icon",
         textures_btbg = "Interface\\Buttons\\WHITE8x8",
-        button_font = "Interface\\Addons\\m_ActionBars\\media\\font.ttf",
+        button_font = "Interface\\Addons\\MonoUI\\modules\\m_ActionBars\\media\\font.ttf",
     },
 }
 

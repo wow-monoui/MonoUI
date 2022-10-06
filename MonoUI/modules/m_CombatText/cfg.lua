@@ -2,7 +2,7 @@ local addon, ns = ...
 local cfg = CreateFrame("Frame")
 
 cfg.combattext = {
-  font = "Interface\\Addons\\m_CombatText\\media\\font.ttf", -- font
+  font = "Interface\\Addons\\MonoUI\\modules\\m_CombatText\\media\\font.ttf", -- font
   fontsize = 15, -- font size
   fontstyle = "OUTLINE", -- font style
 

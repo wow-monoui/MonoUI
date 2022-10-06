@@ -53,7 +53,7 @@ local PutInEditbox = function(txt)
 end
 
 -- Dropdown menu link
-hooksecurefunc("UnitPopup_OnClick", function(self)
+hooksecurefunc("UnitPopup_ShowMenu", function(self)
 	local dropdownFrame = UIDROPDOWNMENU_INIT_MENU
 	local name = dropdownFrame.name
 	if name and self.value == "ARMORYLINK" then
@@ -90,7 +90,7 @@ hooksecurefunc("UnitPopup_OnClick", function(self)
 	end
 end)
 
-UnitPopupButtons["ARMORYLINK"] = {text = "Armory Link", dist = 0, func = UnitPopup_OnClick}
+UnitPopupButtons["ARMORYLINK"] = {text = "Armory Link", dist = 0, func = UnitPopup_ShowMenu}
 tinsert(UnitPopupMenus["FRIEND"], #UnitPopupMenus["FRIEND"] - 1, "ARMORYLINK")
 tinsert(UnitPopupMenus["PARTY"], #UnitPopupMenus["PARTY"] - 1, "ARMORYLINK")
 tinsert(UnitPopupMenus["RAID"], #UnitPopupMenus["RAID"] - 1, "ARMORYLINK")

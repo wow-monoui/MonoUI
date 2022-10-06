@@ -174,13 +174,13 @@ cfg.oUF = {
   },
   -- MEDIA
   media = {
-    statusbar = "Interface\\Addons\\oUF_mono\\media\\statusbar",
-    auratex = "Interface\\Addons\\oUF_mono\\media\\iconborder",
-    font = "Interface\\Addons\\oUF_mono\\media\\font.ttf",
-    backdrop_texture = "Interface\\Addons\\oUF_mono\\media\\backdrop",
-    backdrop_edge_texture = "Interface\\Addons\\oUF_mono\\media\\backdrop_edge",
-    aurafont = "Interface\\Addons\\oUF_mono\\media\\auras.ttf",
-    debuffborder = "Interface\\Addons\\oUF_mono\\media\\iconborder",
+    statusbar = "Interface\\Addons\\MonoUI\\modules\\oUF_mono\\media\\statusbar",
+    auratex = "Interface\\Addons\\MonoUI\\modules\\oUF_mono\\media\\iconborder",
+    font = "Interface\\Addons\\MonoUI\\modules\\oUF_mono\\media\\font.ttf",
+    backdrop_texture = "Interface\\Addons\\MonoUI\\modules\\oUF_mono\\media\\backdrop",
+    backdrop_edge_texture = "Interface\\Addons\\MonoUI\\modules\\oUF_mono\\media\\backdrop_edge",
+    aurafont = "Interface\\Addons\\MonoUI\\modules\\oUF_mono\\media\\auras.ttf",
+    debuffborder = "Interface\\Addons\\MonoUI\\modules\\oUF_mono\\media\\iconborder",
     highlightTex = "Interface\\Buttons\\WHITE8x8"
   }
 }

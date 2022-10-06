@@ -21,15 +21,15 @@ function m_Bags:OnInit()
 
 	-- create containers
 	f.main = MyContainer:New("Main", {
-			Columns = cfg.bags.columns,
-			Scale = cfg.bags.scale,
-			Bags = "backpack+bags",
-			Movable = true,
+    Columns = cfg.bags.columns,
+    Scale = cfg.bags.scale,
+    Bags = "backpack+bags",
+    Movable = true,
 	})
 	f.bank = MyContainer:New("Bank", {
-			Columns = cfg.bank.columns,
-			Scale = cfg.bank.scale,
-			Bags = "bankframe+bank",
+    Columns = cfg.bank.columns,
+    Scale = cfg.bank.scale,
+    Bags = "bankframe+bank",
 	})
 	f.sets = MyContainer:New("ItemSets", {Columns = f.main.Settings.Columns, Scale = f.main.Settings.Scale, Bags = "backpack+bags"})
 	f.banksets = MyContainer:New("BankItemSets", {Columns = f.bank.Settings.Columns, Scale = f.bank.Settings.Scale, Bags = "bankframe+bank"})
@@ -331,7 +331,7 @@ function MyContainer:OnCreate(name, settings)
 		closebutton:SetPoint("BOTTOMRIGHT", -5, 9)
 		closebutton:SetSize(20,14)
 
-		local closebtex =	"Interface\\AddOns\\m_Bags\\media\\black-close"
+		local closebtex =	"Interface\\AddOns\\MonoUI\\modules\\m_Bags\\media\\black-close"
 		local close = closebutton:CreateTexture(nil, "ARTWORK")
 		close:SetTexture(closebtex)
 		close:SetTexCoord(0, .7, 0, 1)

@@ -55,6 +55,9 @@ end
 
 local StartTimer = function(self, start, duration)
 	if self.noOCC then return end
+  if self.noCooldownCount or self:IsForbidden() then
+    return
+  end
 	local text = self.text or CreateTimer(self)
 	if text then
 		self.start = start

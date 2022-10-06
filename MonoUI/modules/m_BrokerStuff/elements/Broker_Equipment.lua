@@ -112,7 +112,7 @@ function addon:initialize(level)
 end
 
 function addon:ADDON_LOADED(event, name)
-	if(name ~= "m_BrokerStuff") then return end
+	if(name ~= "MonoUI") then return end
 
 	Broker_EquipmentDB = Broker_EquipmentDB or {text = 'No set', icon = [=[Interface\PaperDollInfoFrame\UI-EquipmentManager-Toggle]=]}
 

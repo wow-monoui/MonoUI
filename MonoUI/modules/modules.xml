@@ -4,6 +4,7 @@
   <Include file="m_Bags\m_Bags.xml"/>
   <Include file="m_BrokerStuff\m_BrokerStuff.xml"/>
   <Include file="m_CombatText\m_CombatText.xml"/>
+  <Include file="m_Communities\m_Communities.xml"/>
   <Include file="m_Loot\m_Loot.xml"/>
   <!-- <Include file="m_Nameplates.xml"/> -->
   <Include file="m_UI\m_UI.xml"/>

@@ -4,10 +4,10 @@ local cfg = CreateFrame("Frame")
 -- Player bags settings
 cfg.bags = { 
 	general = {
-        textures_normal = "Interface\\Addons\\m_Bags\\media\\icon",
-        textures_pushed = "Interface\\Addons\\m_Bags\\media\\icon",
+        textures_normal = "Interface\\Addons\\MonoUI\\modules\\m_Bags\\media\\icon",
+        textures_pushed = "Interface\\Addons\\MonoUI\\modules\\m_Bags\\media\\icon",
         textures_btbg = "Interface\\Buttons\\WHITE8x8",
-		font = "Interface\\Addons\\m_Bags\\media\\font.ttf",
+		font = "Interface\\Addons\\MonoUI\\modules\\m_Bags\\media\\font.ttf",
 		font_size = 14,
     },
     colors = {
@@ -34,7 +34,7 @@ cfg.bank = {
 	position = {"BOTTOMRIGHT", "m_BagsMain", "BOTTOMLEFT", -25, 0},
 	columns = 12,
 	scale = 0.96,
-	sets = false,
+	sets = true,
 }
 
 options = {
@@ -63,16 +63,16 @@ options = {
 
     fonts = {
         -- Font to use for bag captions and other strings.
-        standard = { "Interface\\Addons\\m_Bags\\media\\font.ttf", 12, "OUTLINE" },
+        standard = { "Interface\\Addons\\MonoUI\\modules\\m_Bags\\media\\font.ttf", 12, "OUTLINE" },
 
         --Font to use for the dropdown menu
-        dropdown = { "Interface\\Addons\\m_Bags\\media\\font.ttf", 13, nil },
+        dropdown = { "Interface\\Addons\\MonoUI\\modules\\m_Bags\\media\\font.ttf", 13, nil },
 
         -- Font to use for durability and item level
-        itemInfo = { "Interface\\Addons\\m_Bags\\media\\font.ttf", 9, "OUTLINE" },
+        itemInfo = { "Interface\\Addons\\MonoUI\\modules\\m_Bags\\media\\font.ttf", 9, "OUTLINE" },
 
         -- Font to use for number of items in a stack
-        itemCount = { "Interface\\Addons\\m_Bags\\media\\font.ttf", 12, "OUTLINE" },
+        itemCount = { "Interface\\Addons\\MonoUI\\modules\\m_Bags\\media\\font.ttf", 12, "OUTLINE" },
     },
 
     -- r, g, b, opacity
