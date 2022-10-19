@@ -1,0 +1,12 @@
+<Ui xmlns='http://www.blizzard.com/wow/ui/'>
+  <Script file="!mCFG_init.lua" />
+  <Script file="init\m_UI.lua" />
+  <Script file="init\m_ActionBars.lua" />
+  <Script file="init\m_Bags.lua" />
+  <Script file="init\m_CombatText.lua" />
+  <Script file="init\m_Loot.lua" />
+  <Script file="init\m_Map.lua" />
+  <Script file="init\m_Nameplates.lua" />
+  <Script file="init\oUF_mono.lua" />
+  <Script file="!mCFG.lua" />
+</Ui>

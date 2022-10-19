@@ -1,0 +1,12 @@
+## Interface: 90207
+## Author: Mono, Kaitsuburi
+## Version: 7.3.0
+## Title: mono|cffffffffUI|r
+## Notes: User Interface replacement AddOn for World of Warcraft.
+## SavedVariables: MonoDB, MonoPrivateDB, MoneyDB
+## SavedVariablesPerCharacter: MonoCharacterDB, Broker_EquipmentDB, SB_MEM_KILL, CommunityDB
+## OptionalDeps: Bigwigs, DBM-Core, NugRunning, Skada
+## X-oUF: oUF_Mono
+
+libraries\libraries.xml
+modules\modules.xml

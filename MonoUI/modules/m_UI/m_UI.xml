@@ -1,0 +1,60 @@
+<Ui xmlns='http://www.blizzard.com/wow/ui/'>
+  <Script file="cfg.lua" />
+  <Script file="..\m_CFG\mCFG_layer.lua" />
+  <Script file="API\functions.lua" />
+
+  <Script file="elements\modules\noTaint.lua" />
+  <Script file="elements\modules\font.lua" />
+
+  <Script file="elements\panels\panels.lua" />
+  <Script file="elements\panels\layout.lua" />
+
+  <Script file="elements\Scripts.lua" />
+  <Script file="elements\BossStuff.lua" />
+
+  <Script file="elements\skins\StyleDBM.lua" />
+  <Script file="elements\skins\StyleBW.lua" />
+  <Script file="elements\skins\StyleNRun.lua" />
+  <Script file="elements\skins\StyleBlizTimer.lua" />
+  <Script file="elements\skins\StyleSkada.lua" />
+
+  <Script file="elements\automation\Mountz.lua" />
+  <Script file="elements\automation\shoutCD.lua" />
+  <Script file="elements\automation\MailGet.lua" />
+  <Script file="elements\automation\AutoLog.lua" />
+  <Script file="elements\automation\AchiScreenshot.lua" />
+  <Script file="elements\automation\pullCountdown.lua" />
+  <Script file="elements\automation\shoutDrink.lua" />
+  <Script file="elements\automation\shoutInterrupt.lua" />
+  <Script file="elements\automation\AutoRepairSell.lua" />
+  <Script file="elements\automation\TalkingHead.lua" />
+
+  <Script file="elements\automation\Invite.lua" />
+  <Script file="elements\automation\BuyStack.lua" />
+  <Script file="elements\automation\Loot.lua" />
+
+  <Script file="elements\chat\chat.lua" />
+  <!-- <Script file="elements\chat\armory_link.lua" /> -->
+  <Script file="elements\chat\meters_reports.lua" />
+
+  <Script file="elements\modules\alert_frames.lua" />
+  <Script file="elements\modules\buff_frame.lua" />
+  <Script file="elements\modules\cooldown_count.lua" />
+  <Script file="elements\modules\durability.lua" />
+  <Script file="elements\modules\error_frame.lua" />
+  <Script file="elements\modules\minimap.lua" />
+  <Script file="elements\modules\quest.lua" />
+  <Script file="elements\modules\raid_buffs.lua" />
+  <Script file="elements\modules\raid_cd.lua" />
+  <Script file="elements\modules\raid_mark.lua" />
+  <Script file="elements\modules\score_frame.lua" />
+  <Script file="elements\modules\slash_cmd.lua" />
+  <Script file="elements\modules\threat_meter.lua" />
+  <Script file="elements\modules\timer_LFG.lua" />
+  <Script file="elements\modules\toggle_cloak_helm.lua" />
+  <Script file="elements\modules\tooltip.lua" />
+  <Script file="elements\modules\tooltip_spellID.lua" />
+  <Script file="elements\modules\xp_bar.lua" />
+
+  <Script file="elements\test\test.lua" />
+</Ui>
